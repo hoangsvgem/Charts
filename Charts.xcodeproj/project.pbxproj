@@ -146,7 +146,7 @@
 		06B3C0F81D99F85400B1DF43 /* LineChartTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06B3C0F41D99F85400B1DF43 /* LineChartTests.swift */; };
 		5B56A9CD1D905EB300F58178 /* Description.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B56A9CC1D905EB300F58178 /* Description.swift */; };
 		5BF8813B1DDC4DF70033370C /* IndexAxisValueFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BF8813A1DDC4DF70033370C /* IndexAxisValueFormatter.swift */; };
-		B60492F520A9750800D3F07C /* CustomXAxisRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B60492F420A9750800D3F07C /* CustomXAxisRenderer.swift */; };
+		B60492F820A9783D00D3F07C /* CustomXAxisRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B60492F720A9783D00D3F07C /* CustomXAxisRenderer.swift */; };
 		D8A58A411DCE2EF8007BB012 /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D8A58A401DCE2EF8007BB012 /* Media.xcassets */; };
 /* End PBXBuildFile section */
 
@@ -304,7 +304,7 @@
 		06B3C0F41D99F85400B1DF43 /* LineChartTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LineChartTests.swift; sourceTree = "<group>"; };
 		5B56A9CC1D905EB300F58178 /* Description.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Description.swift; sourceTree = "<group>"; };
 		5BF8813A1DDC4DF70033370C /* IndexAxisValueFormatter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IndexAxisValueFormatter.swift; sourceTree = "<group>"; };
-		B60492F420A9750800D3F07C /* CustomXAxisRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomXAxisRenderer.swift; sourceTree = "<group>"; };
+		B60492F720A9783D00D3F07C /* CustomXAxisRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CustomXAxisRenderer.swift; path = Source/Charts/Custom/CustomXAxisRenderer.swift; sourceTree = SOURCE_ROOT; };
 		D8A58A401DCE2EF8007BB012 /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Media.xcassets; path = Charts/ChartsTests/Media.xcassets; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
@@ -368,7 +368,7 @@
 		06B11FAA1D811B4300D14B02 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				B60492F320A974EC00D3F07C /* Custom */,
+				B60492F620A9780C00D3F07C /* Custom */,
 				06B11FB01D811B8900D14B02 /* Animation */,
 				06B11FB31D811B8900D14B02 /* Charts */,
 				06B11FC01D811B8900D14B02 /* Components */,
@@ -666,10 +666,10 @@
 			path = Tests/Charts;
 			sourceTree = SOURCE_ROOT;
 		};
-		B60492F320A974EC00D3F07C /* Custom */ = {
+		B60492F620A9780C00D3F07C /* Custom */ = {
 			isa = PBXGroup;
 			children = (
-				B60492F420A9750800D3F07C /* CustomXAxisRenderer.swift */,
+				B60492F720A9783D00D3F07C /* CustomXAxisRenderer.swift */,
 			);
 			path = Custom;
 			sourceTree = "<group>";
@@ -920,7 +920,7 @@
 				06B120A51D811B8900D14B02 /* BubbleChartRenderer.swift in Sources */,
 				06B120B91D811B8900D14B02 /* ScatterChartRenderer.swift in Sources */,
 				06B120741D811B8900D14B02 /* RadarChartDataEntry.swift in Sources */,
-				B60492F520A9750800D3F07C /* CustomXAxisRenderer.swift in Sources */,
+				B60492F820A9783D00D3F07C /* CustomXAxisRenderer.swift in Sources */,
 				06B120BA1D811B8900D14B02 /* XAxisRenderer.swift in Sources */,
 				06B120641D811B8900D14B02 /* CandleChartData.swift in Sources */,
 				06B120AA1D811B8900D14B02 /* LegendRenderer.swift in Sources */,
