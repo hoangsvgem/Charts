@@ -307,7 +307,6 @@
 		5B57BBB11A9B26AA0036A6CC /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				B674EB1020A98C0D00951BAE /* Custom */,
 				5B57BBB61A9B26AA0036A6CC /* AppDelegate.h */,
 				5B57BBB71A9B26AA0036A6CC /* AppDelegate.m */,
 				5B57BBB91A9B26AA0036A6CC /* DemoListViewController.h */,
@@ -453,13 +452,6 @@
 				5BE673991D5BAD7E00A87BA2 /* DateValueFormatter.m */,
 			);
 			path = Formatters;
-			sourceTree = "<group>";
-		};
-		B674EB1020A98C0D00951BAE /* Custom */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Custom;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

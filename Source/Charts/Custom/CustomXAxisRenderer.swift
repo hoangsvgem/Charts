@@ -15,7 +15,7 @@ import CoreGraphics
 @objc(CustomChartXAxisRenderer)
 open class CustomXAxisRenderer: XAxisRenderer
 {
-    let haveCommentList = [true, false, false, true, true, true]
+    var haveCommentList = [true, false, false, true, true, true]
     
     /// draws the x-labels on the specified y-position
     open override func drawLabels(context: CGContext, pos: CGFloat, anchor: CGPoint)

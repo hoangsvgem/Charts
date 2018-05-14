@@ -680,7 +680,8 @@
 				B674EB1C20A9925900951BAE /* CustomCombinedChartView.swift */,
 				B674EB1E20A992FF00951BAE /* CustomCombinedChartRenderer.swift */,
 			);
-			path = Custom;
+			name = Custom;
+			path = Source/Charts/Custom;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
