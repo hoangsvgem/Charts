@@ -15,6 +15,9 @@ import CoreGraphics
 @objc(CustomChartXAxisRenderer)
 open class CustomXAxisRenderer: XAxisRenderer
 {
+    
+    var labelList = [String]()
+    
     var haveCommentList = [true, false, false, true, true, true]
     
     /// draws the x-labels on the specified y-position
@@ -59,8 +62,10 @@ open class CustomXAxisRenderer: XAxisRenderer
             //label attrs moved to here
             let labelAttrs: [String: NSObject]!
             
-            if(i<haveCommentList.count) {
-                if haveCommentList[i] {
+            let labelF = xAxis.valueFormatter?.stringForValue(xAxis.entries[i], axis: xAxis) ?? ""
+            
+            if labelList.contains(labelF) {
+                if haveCommentList[labelList.index(of: labelF)!] {
                     labelAttrs = [NSFontAttributeName: xAxis.labelFont,
                                   NSForegroundColorAttributeName: UIColor.blue,
                                   NSParagraphStyleAttributeName: paraStyle] as [String : NSObject]
@@ -69,12 +74,10 @@ open class CustomXAxisRenderer: XAxisRenderer
                                   NSForegroundColorAttributeName: xAxis.labelTextColor,
                                   NSParagraphStyleAttributeName: paraStyle] as [String : NSObject]
                 }
-            }
-            else {
+            } else {
                 labelAttrs = [NSFontAttributeName: xAxis.labelFont,
                               NSForegroundColorAttributeName: xAxis.labelTextColor,
                               NSParagraphStyleAttributeName: paraStyle] as [String : NSObject]
-                
             }
             
             if centeringEnabled

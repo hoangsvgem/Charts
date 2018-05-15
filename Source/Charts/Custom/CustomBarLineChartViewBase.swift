@@ -1765,6 +1765,12 @@ open class CustomBarLineChartViewBase: ChartViewBase, BarLineScatterCandleBubble
         }
     }
     
+    open func setLabelList(list: [String]?) {
+        if let list = list {
+            _xAxisRenderer.labelList = list
+        }
+    }
+    
     /// The left Y axis renderer. This is a read-write property so you can set your own custom renderer here.
     /// **default**: An instance of YAxisRenderer
     /// - returns: The current set left Y axis renderer
