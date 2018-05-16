@@ -60,25 +60,7 @@ open class CustomXAxisRenderer: XAxisRenderer
         for i in stride(from: 0, to: entries.count, by: 1)
         {
             //label attrs moved to here
-            let labelAttrs: [String: NSObject]!
-            
-            let labelF = xAxis.valueFormatter?.stringForValue(xAxis.entries[i], axis: xAxis) ?? ""
-            
-            if labelList.contains(labelF) {
-                if haveCommentList[labelList.index(of: labelF)!] {
-                    labelAttrs = [NSFontAttributeName: xAxis.labelFont,
-                                  NSForegroundColorAttributeName: UIColor.blue,
-                                  NSParagraphStyleAttributeName: paraStyle] as [String : NSObject]
-                } else {
-                    labelAttrs = [NSFontAttributeName: xAxis.labelFont,
-                                  NSForegroundColorAttributeName: xAxis.labelTextColor,
-                                  NSParagraphStyleAttributeName: paraStyle] as [String : NSObject]
-                }
-            } else {
-                labelAttrs = [NSFontAttributeName: xAxis.labelFont,
-                              NSForegroundColorAttributeName: xAxis.labelTextColor,
-                              NSParagraphStyleAttributeName: paraStyle] as [String : NSObject]
-            }
+            var labelAttrs: [String: NSObject]!
             
             if centeringEnabled
             {
@@ -95,6 +77,28 @@ open class CustomXAxisRenderer: XAxisRenderer
             if viewPortHandler.isInBoundsX(position.x)
             {
                 let label = xAxis.valueFormatter?.stringForValue(xAxis.entries[i], axis: xAxis) ?? ""
+                
+                if labelList.contains(label) {
+                    if labelList.index(of: label)! < haveCommentList.count {
+                        if haveCommentList[labelList.index(of: label)!] {
+                            labelAttrs = [NSFontAttributeName: xAxis.labelFont,
+                                          NSForegroundColorAttributeName: UIColor.blue,
+                                          NSParagraphStyleAttributeName: paraStyle] as [String : NSObject]
+                        } else {
+                            labelAttrs = [NSFontAttributeName: xAxis.labelFont,
+                                          NSForegroundColorAttributeName: xAxis.labelTextColor,
+                                          NSParagraphStyleAttributeName: paraStyle] as [String : NSObject]
+                        }
+                    } else {
+                        labelAttrs = [NSFontAttributeName: xAxis.labelFont,
+                                      NSForegroundColorAttributeName: xAxis.labelTextColor,
+                                      NSParagraphStyleAttributeName: paraStyle] as [String : NSObject]
+                    }
+                } else {
+                    labelAttrs = [NSFontAttributeName: xAxis.labelFont,
+                                  NSForegroundColorAttributeName: xAxis.labelTextColor,
+                                  NSParagraphStyleAttributeName: paraStyle] as [String : NSObject]
+                }
                 
                 let labelns = label as NSString
                 
