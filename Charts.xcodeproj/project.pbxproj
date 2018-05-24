@@ -150,6 +150,7 @@
 		B674EB1B20A9922700951BAE /* CustomBarLineChartViewBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B674EB1A20A9922700951BAE /* CustomBarLineChartViewBase.swift */; };
 		B674EB1D20A9925900951BAE /* CustomCombinedChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B674EB1C20A9925900951BAE /* CustomCombinedChartView.swift */; };
 		B674EB1F20A992FF00951BAE /* CustomCombinedChartRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B674EB1E20A992FF00951BAE /* CustomCombinedChartRenderer.swift */; };
+		B6CF08F220B6ACD200E8CD13 /* CustomLineChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6CF08F120B6ACD200E8CD13 /* CustomLineChartView.swift */; };
 		D8A58A411DCE2EF8007BB012 /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D8A58A401DCE2EF8007BB012 /* Media.xcassets */; };
 /* End PBXBuildFile section */
 
@@ -311,6 +312,7 @@
 		B674EB1A20A9922700951BAE /* CustomBarLineChartViewBase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CustomBarLineChartViewBase.swift; path = Source/Charts/Custom/CustomBarLineChartViewBase.swift; sourceTree = SOURCE_ROOT; };
 		B674EB1C20A9925900951BAE /* CustomCombinedChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CustomCombinedChartView.swift; path = Source/Charts/Custom/CustomCombinedChartView.swift; sourceTree = SOURCE_ROOT; };
 		B674EB1E20A992FF00951BAE /* CustomCombinedChartRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CustomCombinedChartRenderer.swift; path = Source/Charts/Custom/CustomCombinedChartRenderer.swift; sourceTree = SOURCE_ROOT; };
+		B6CF08F120B6ACD200E8CD13 /* CustomLineChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomLineChartView.swift; sourceTree = "<group>"; };
 		D8A58A401DCE2EF8007BB012 /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Media.xcassets; path = Charts/ChartsTests/Media.xcassets; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
@@ -679,6 +681,7 @@
 				B674EB1A20A9922700951BAE /* CustomBarLineChartViewBase.swift */,
 				B674EB1C20A9925900951BAE /* CustomCombinedChartView.swift */,
 				B674EB1E20A992FF00951BAE /* CustomCombinedChartRenderer.swift */,
+				B6CF08F120B6ACD200E8CD13 /* CustomLineChartView.swift */,
 			);
 			name = Custom;
 			path = Source/Charts/Custom;
@@ -877,6 +880,7 @@
 				06B120BE1D811B8900D14B02 /* YAxisRendererHorizontalBarChart.swift in Sources */,
 				06B120B51D811B8900D14B02 /* IShapeRenderer.swift in Sources */,
 				06B120B71D811B8900D14B02 /* TriangleShapeRenderer.swift in Sources */,
+				B6CF08F220B6ACD200E8CD13 /* CustomLineChartView.swift in Sources */,
 				06B120971D811B8900D14B02 /* CandleChartDataProvider.swift in Sources */,
 				06B120C11D811B8900D14B02 /* ChartUtils.swift in Sources */,
 				06B120BD1D811B8900D14B02 /* YAxisRenderer.swift in Sources */,
