@@ -61,4 +61,16 @@ open class IndexAxisValueFormatter: NSObject, IAxisValueFormatter
         
         return _values[index]
     }
+    
+    public func stringForValueFull(_ value: Double, axis: AxisBase?) -> String {
+        let index = Int(value.rounded())
+        
+        if index < 0 || index >= _valueCount || index != Int(value)
+        {
+            return ""
+        }
+        
+        return _values[index]
+    }
+    
 }

@@ -76,7 +76,8 @@ open class CustomXAxisRenderer: XAxisRenderer
             
             if viewPortHandler.isInBoundsX(position.x)
             {
-                let label = xAxis.valueFormatter?.stringForValue(xAxis.entries[i], axis: xAxis) ?? ""
+                let label = xAxis.valueFormatter?.stringForValueFull(xAxis.entries[i], axis: xAxis) ?? ""
+                let labelCouldShort = xAxis.valueFormatter?.stringForValue(xAxis.entries[i], axis: xAxis) ?? ""
                 
                 if labelList.contains(label) {
                     if labelList.index(of: label)! < haveCommentList.count {
@@ -100,7 +101,7 @@ open class CustomXAxisRenderer: XAxisRenderer
                                   NSParagraphStyleAttributeName: paraStyle] as [String : NSObject]
                 }
                 
-                let labelns = label as NSString
+                let labelns = labelCouldShort as NSString
                 
                 if xAxis.isAvoidFirstLastClippingEnabled
                 {
@@ -123,7 +124,7 @@ open class CustomXAxisRenderer: XAxisRenderer
                 }
                 
                 drawLabel(context: context,
-                          formattedLabel: label,
+                          formattedLabel: labelCouldShort,
                           x: position.x,
                           y: pos,
                           attributes: labelAttrs,

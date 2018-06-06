@@ -100,4 +100,15 @@ open class DefaultAxisValueFormatter: NSObject, IAxisValueFormatter
         }
     }
     
+    public func stringForValueFull(_ value: Double, axis: AxisBase?) -> String {
+        if block != nil
+        {
+            return block!(value, axis)
+        }
+        else
+        {
+            return formatter?.string(from: NSNumber(floatLiteral: value)) ?? ""
+        }
+    }
+    
 }
