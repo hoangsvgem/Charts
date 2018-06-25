@@ -62,6 +62,10 @@ open class CustomXAxisRenderer: XAxisRenderer
             //label attrs moved to here
             var labelAttrs: [String: NSObject]!
             
+            for j in 0..<labelList.count {
+                labelList[j] = labelList[j].trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines).uppercased()
+            }
+            
             if centeringEnabled
             {
                 position.x = CGFloat(xAxis.centeredEntries[i])
@@ -76,7 +80,7 @@ open class CustomXAxisRenderer: XAxisRenderer
             
             if viewPortHandler.isInBoundsX(position.x)
             {
-                let label = xAxis.valueFormatter?.stringForValueFull(xAxis.entries[i], axis: xAxis) ?? ""
+                let label = xAxis.valueFormatter?.stringForValueFull(xAxis.entries[i], axis: xAxis).trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines).uppercased() ?? ""
                 let labelCouldShort = xAxis.valueFormatter?.stringForValue(xAxis.entries[i], axis: xAxis) ?? ""
                 
                 if labelList.contains(label) {
