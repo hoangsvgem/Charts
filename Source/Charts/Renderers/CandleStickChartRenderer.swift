@@ -19,9 +19,9 @@ import CoreGraphics
 
 open class CandleStickChartRenderer: LineScatterCandleRadarRenderer
 {
-    open weak var dataProvider: CandleChartDataProvider?
+    @objc open weak var dataProvider: CandleChartDataProvider?
     
-    public init(dataProvider: CandleChartDataProvider?, animator: Animator?, viewPortHandler: ViewPortHandler?)
+    @objc public init(dataProvider: CandleChartDataProvider, animator: Animator, viewPortHandler: ViewPortHandler)
     {
         super.init(animator: animator, viewPortHandler: viewPortHandler)
         
@@ -32,7 +32,7 @@ open class CandleStickChartRenderer: LineScatterCandleRadarRenderer
     {
         guard let dataProvider = dataProvider, let candleData = dataProvider.candleData else { return }
 
-        for set in candleData.dataSets as! [ICandleChartDataSet]
+        for set in candleData.dataSets as! [CandleChartDataSetProtocol]
         {
             if set.isVisible
             {
@@ -41,19 +41,16 @@ open class CandleStickChartRenderer: LineScatterCandleRadarRenderer
         }
     }
     
-    fileprivate var _shadowPoints = [CGPoint](repeating: CGPoint(), count: 4)
-    fileprivate var _rangePoints = [CGPoint](repeating: CGPoint(), count: 2)
-    fileprivate var _openPoints = [CGPoint](repeating: CGPoint(), count: 2)
-    fileprivate var _closePoints = [CGPoint](repeating: CGPoint(), count: 2)
-    fileprivate var _bodyRect = CGRect()
-    fileprivate var _lineSegments = [CGPoint](repeating: CGPoint(), count: 2)
+    private var _shadowPoints = [CGPoint](repeating: CGPoint(), count: 4)
+    private var _rangePoints = [CGPoint](repeating: CGPoint(), count: 2)
+    private var _openPoints = [CGPoint](repeating: CGPoint(), count: 2)
+    private var _closePoints = [CGPoint](repeating: CGPoint(), count: 2)
+    private var _bodyRect = CGRect()
+    private var _lineSegments = [CGPoint](repeating: CGPoint(), count: 2)
     
-    open func drawDataSet(context: CGContext, dataSet: ICandleChartDataSet)
+    @objc open func drawDataSet(context: CGContext, dataSet: CandleChartDataSetProtocol)
     {
-        guard let
-            dataProvider = dataProvider,
-            let animator = animator
-            else { return }
+        guard let dataProvider = dataProvider else { return }
 
         let trans = dataProvider.getTransformer(forAxis: dataSet.axisDependency)
         
@@ -239,9 +236,7 @@ open class CandleStickChartRenderer: LineScatterCandleRadarRenderer
     {
         guard
             let dataProvider = dataProvider,
-            let viewPortHandler = self.viewPortHandler,
-            let candleData = dataProvider.candleData,
-            let animator = animator
+            let candleData = dataProvider.candleData
             else { return }
         
         // if values are drawn
@@ -255,7 +250,7 @@ open class CandleStickChartRenderer: LineScatterCandleRadarRenderer
             
             for i in 0 ..< dataSets.count
             {
-                guard let dataSet = dataSets[i] as? IBarLineScatterCandleBubbleChartDataSet
+                guard let dataSet = dataSets[i] as? BarLineScatterCandleBubbleChartDataSetProtocol
                     else { continue }
                 
                 if !shouldDrawValues(forDataSet: dataSet)
@@ -265,7 +260,7 @@ open class CandleStickChartRenderer: LineScatterCandleRadarRenderer
                 
                 let valueFont = dataSet.valueFont
                 
-                guard let formatter = dataSet.valueFormatter else { continue }
+                let formatter = dataSet.valueFormatter
                 
                 let trans = dataProvider.getTransformer(forAxis: dataSet.axisDependency)
                 let valueToPixelMatrix = trans.valueToPixelMatrix
@@ -297,27 +292,23 @@ open class CandleStickChartRenderer: LineScatterCandleRadarRenderer
                     
                     if dataSet.isDrawValuesEnabled
                     {
-                        ChartUtils.drawText(
-                            context: context,
-                            text: formatter.stringForValue(
-                                e.high,
-                                entry: e,
-                                dataSetIndex: i,
-                                viewPortHandler: viewPortHandler),
-                            point: CGPoint(
-                                x: pt.x,
-                                y: pt.y - yOffset),
-                            align: .center,
-                            attributes: [NSFontAttributeName: valueFont, NSForegroundColorAttributeName: dataSet.valueTextColorAt(j)])
+                        context.drawText(formatter.stringForValue(e.high,
+                                                                  entry: e,
+                                                                  dataSetIndex: i,
+                                                                  viewPortHandler: viewPortHandler),
+                                         at: CGPoint(x: pt.x,
+                                                     y: pt.y - yOffset),
+                                         align: .center,
+                                         attributes: [.font: valueFont,
+                                                      .foregroundColor: dataSet.valueTextColorAt(j)])
                     }
                     
                     if let icon = e.icon, dataSet.isDrawIconsEnabled
                     {
-                        ChartUtils.drawImage(context: context,
-                                             image: icon,
-                                             x: pt.x + iconsOffset.x,
-                                             y: pt.y + iconsOffset.y,
-                                             size: icon.size)
+                        context.drawImage(icon,
+                                          atCenter: CGPoint(x: pt.x + iconsOffset.x,
+                                                          y: pt.y + iconsOffset.y),
+                                          size: icon.size)
                     }
                 }
             }
@@ -332,8 +323,7 @@ open class CandleStickChartRenderer: LineScatterCandleRadarRenderer
     {
         guard
             let dataProvider = dataProvider,
-            let candleData = dataProvider.candleData,
-            let animator = animator
+            let candleData = dataProvider.candleData
             else { return }
         
         context.saveGState()
@@ -341,7 +331,7 @@ open class CandleStickChartRenderer: LineScatterCandleRadarRenderer
         for high in indices
         {
             guard
-                let set = candleData.getDataSetByIndex(high.dataSetIndex) as? ICandleChartDataSet,
+                let set = candleData[high.dataSetIndex] as? CandleChartDataSetProtocol,
                 set.isHighlightEnabled
                 else { continue }
             

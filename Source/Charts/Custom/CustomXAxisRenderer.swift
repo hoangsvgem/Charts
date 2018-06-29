@@ -40,7 +40,7 @@ open class CustomXAxisRenderer: XAxisRenderer
         //        let labelAttrs = [NSFontAttributeName: xAxis.labelFont,
         //            NSForegroundColorAttributeName: xAxis.labelTextColor,
         //            NSParagraphStyleAttributeName: paraStyle] as [String : NSObject]
-        let labelRotationAngleRadians = xAxis.labelRotationAngle * ChartUtils.Math.FDEG2RAD
+        let labelRotationAngleRadians = xAxis.labelRotationAngle * chart ChartUtils.Math.FDEG2RAD
         
         let centeringEnabled = xAxis.isCenterAxisLabelsEnabled
         
@@ -60,7 +60,7 @@ open class CustomXAxisRenderer: XAxisRenderer
         for i in stride(from: 0, to: entries.count, by: 1)
         {
             //label attrs moved to here
-            var labelAttrs: [String: NSObject]!
+            var labelAttrs: [NSAttributedStringKey : Any]!
             
             for j in 0..<labelList.count {
                 labelList[j] = labelList[j].trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines).uppercased()
@@ -86,23 +86,23 @@ open class CustomXAxisRenderer: XAxisRenderer
                 if labelList.contains(label) {
                     if labelList.index(of: label)! < haveCommentList.count {
                         if haveCommentList[labelList.index(of: label)!] {
-                            labelAttrs = [NSFontAttributeName: xAxis.labelFont,
-                                          NSForegroundColorAttributeName: UIColor.blue,
-                                          NSParagraphStyleAttributeName: paraStyle] as [String : NSObject]
+                            labelAttrs = [kCTFontAttributeName: xAxis.labelFont,
+                                          kCTForegroundColorAttributeName: UIColor.blue,
+                                          kCTParagraphStyleAttributeName: paraStyle] as [NSAttributedStringKey : Any]
                         } else {
-                            labelAttrs = [NSFontAttributeName: xAxis.labelFont,
-                                          NSForegroundColorAttributeName: xAxis.labelTextColor,
-                                          NSParagraphStyleAttributeName: paraStyle] as [String : NSObject]
+                            labelAttrs = [kCTFontAttributeName: xAxis.labelFont,
+                                          kCTForegroundColorAttributeName: xAxis.labelTextColor,
+                                          kCTParagraphStyleAttributeName: paraStyle] as [NSAttributedStringKey : Any]
                         }
                     } else {
-                        labelAttrs = [NSFontAttributeName: xAxis.labelFont,
-                                      NSForegroundColorAttributeName: xAxis.labelTextColor,
-                                      NSParagraphStyleAttributeName: paraStyle] as [String : NSObject]
+                        labelAttrs = [kCTFontAttributeName: xAxis.labelFont,
+                                      kCTForegroundColorAttributeName: xAxis.labelTextColor,
+                                      kCTParagraphStyleAttributeName: paraStyle] as [NSAttributedStringKey : Any]
                     }
                 } else {
-                    labelAttrs = [NSFontAttributeName: xAxis.labelFont,
-                                  NSForegroundColorAttributeName: xAxis.labelTextColor,
-                                  NSParagraphStyleAttributeName: paraStyle] as [String : NSObject]
+                    labelAttrs = [kCTFontAttributeName: xAxis.labelFont,
+                                  kCTForegroundColorAttributeName: xAxis.labelTextColor,
+                                  kCTParagraphStyleAttributeName: paraStyle] as [NSAttributedStringKey : Any]
                 }
                 
                 let labelns = labelCouldShort as NSString
@@ -112,7 +112,8 @@ open class CustomXAxisRenderer: XAxisRenderer
                     // avoid clipping of the last
                     if i == xAxis.entryCount - 1 && xAxis.entryCount > 1
                     {
-                        let width = labelns.boundingRect(with: labelMaxSize, options: .usesLineFragmentOrigin, attributes: labelAttrs, context: nil).size.width
+                        let width = labelns.boundingRect(with: labelMaxSize, options: .usesLineFragmentOrigin,
+                                                         attributes: labelAttrs, context: nil).size.width
                         
                         if width > viewPortHandler.offsetRight * 2.0
                             && position.x + width > viewPortHandler.chartWidth
@@ -122,7 +123,8 @@ open class CustomXAxisRenderer: XAxisRenderer
                     }
                     else if i == 0
                     { // avoid clipping of the first
-                        let width = labelns.boundingRect(with: labelMaxSize, options: .usesLineFragmentOrigin, attributes: labelAttrs, context: nil).size.width
+                        let width = labelns.boundingRect(with: labelMaxSize, options: .usesLineFragmentOrigin,
+                                                         attributes: labelAttrs, context: nil).size.width
                         position.x += width / 2.0
                     }
                 }

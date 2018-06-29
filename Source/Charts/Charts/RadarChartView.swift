@@ -18,28 +18,28 @@ import CoreGraphics
 open class RadarChartView: PieRadarChartViewBase
 {
     /// width of the web lines that come from the center.
-    open var webLineWidth = CGFloat(1.5)
+    @objc open var webLineWidth = CGFloat(1.5)
     
     /// width of the web lines that are in between the lines coming from the center
-    open var innerWebLineWidth = CGFloat(0.75)
+    @objc open var innerWebLineWidth = CGFloat(0.75)
     
     /// color for the web lines that come from the center
-    open var webColor = NSUIColor(red: 122/255.0, green: 122/255.0, blue: 122.0/255.0, alpha: 1.0)
+    @objc open var webColor = NSUIColor(red: 122/255.0, green: 122/255.0, blue: 122.0/255.0, alpha: 1.0)
     
     /// color for the web lines in between the lines that come from the center.
-    open var innerWebColor = NSUIColor(red: 122/255.0, green: 122/255.0, blue: 122.0/255.0, alpha: 1.0)
+    @objc open var innerWebColor = NSUIColor(red: 122/255.0, green: 122/255.0, blue: 122.0/255.0, alpha: 1.0)
     
     /// transparency the grid is drawn with (0.0 - 1.0)
-    open var webAlpha: CGFloat = 150.0 / 255.0
+    @objc open var webAlpha: CGFloat = 150.0 / 255.0
     
     /// flag indicating if the web lines should be drawn or not
-    open var drawWeb = true
+    @objc open var drawWeb = true
     
     /// modulus that determines how many labels and web-lines are skipped before the next is drawn
-    fileprivate var _skipWebLineCount = 0
+    private var _skipWebLineCount = 0
     
     /// the object reprsenting the y-axis labels
-    fileprivate var _yAxis: YAxis!
+    private var _yAxis: YAxis!
     
     internal var _yAxisRenderer: YAxisRendererRadarChart!
     internal var _xAxisRenderer: XAxisRendererRadarChart!
@@ -60,11 +60,11 @@ open class RadarChartView: PieRadarChartViewBase
         
         _yAxis = YAxis(position: .left)
         
-        renderer = RadarChartRenderer(chart: self, animator: _animator, viewPortHandler: _viewPortHandler)
+        renderer = RadarChartRenderer(chart: self, animator: chartAnimator, viewPortHandler: viewPortHandler)
         
-        _yAxisRenderer = YAxisRendererRadarChart(viewPortHandler: _viewPortHandler, yAxis: _yAxis, chart: self)
-        _xAxisRenderer = XAxisRendererRadarChart(viewPortHandler: _viewPortHandler, xAxis: _xAxis, chart: self)
-        
+        _yAxisRenderer = YAxisRendererRadarChart(viewPortHandler: viewPortHandler, axis: _yAxis, chart: self)
+        _xAxisRenderer = XAxisRendererRadarChart(viewPortHandler: viewPortHandler, axis: xAxis, chart: self)
+
         self.highlighter = RadarHighlighter(chart: self)
     }
 
@@ -72,24 +72,23 @@ open class RadarChartView: PieRadarChartViewBase
     {
         super.calcMinMax()
         
-        guard let data = _data else { return }
+        guard let data = data else { return }
         
         _yAxis.calculate(min: data.getYMin(axis: .left), max: data.getYMax(axis: .left))
-        _xAxis.calculate(min: 0.0, max: Double(data.maxEntryCountSet?.entryCount ?? 0))
+        xAxis.calculate(min: 0.0, max: Double(data.maxEntryCountSet?.entryCount ?? 0))
     }
     
     open override func notifyDataSetChanged()
     {
         calcMinMax()
-        
+
         _yAxisRenderer?.computeAxis(min: _yAxis._axisMinimum, max: _yAxis._axisMaximum, inverted: _yAxis.isInverted)
-        _xAxisRenderer?.computeAxis(min: _xAxis._axisMinimum, max: _xAxis._axisMaximum, inverted: false)
+        _xAxisRenderer?.computeAxis(min: xAxis._axisMinimum, max: xAxis._axisMaximum, inverted: false)
         
-        if let data = _data,
-            let legend = _legend,
+        if let data = data,
             !legend.isLegendCustom
         {
-            _legendRenderer?.computeLegend(data: data)
+            legendRenderer.computeLegend(data: data)
         }
         
         calculateOffsets()
@@ -101,24 +100,21 @@ open class RadarChartView: PieRadarChartViewBase
     {
         super.draw(rect)
 
-        if _data === nil
-        {
-            return
-        }
+        guard data != nil, let renderer = renderer else { return }
         
         let optionalContext = NSUIGraphicsGetCurrentContext()
         guard let context = optionalContext else { return }
         
-        if _xAxis.isEnabled
+        if xAxis.isEnabled
         {
-            _xAxisRenderer.computeAxis(min: _xAxis._axisMinimum, max: _xAxis._axisMaximum, inverted: false)
+            _xAxisRenderer.computeAxis(min: xAxis._axisMinimum, max: xAxis._axisMaximum, inverted: false)
         }
         
         _xAxisRenderer?.renderAxisLabels(context: context)
         
         if drawWeb
         {
-            renderer!.drawExtras(context: context)
+            renderer.drawExtras(context: context)
         }
         
         if _yAxis.isEnabled && _yAxis.isDrawLimitLinesBehindDataEnabled
@@ -126,11 +122,11 @@ open class RadarChartView: PieRadarChartViewBase
             _yAxisRenderer.renderLimitLines(context: context)
         }
 
-        renderer!.drawData(context: context)
+        renderer.drawData(context: context)
 
         if valuesToHighlight()
         {
-            renderer!.drawHighlighted(context: context, indices: _indicesToHighlight)
+            renderer.drawHighlighted(context: context, indices: highlighted)
         }
         
         if _yAxis.isEnabled && !_yAxis.isDrawLimitLinesBehindDataEnabled
@@ -140,37 +136,37 @@ open class RadarChartView: PieRadarChartViewBase
         
         _yAxisRenderer.renderAxisLabels(context: context)
 
-        renderer!.drawValues(context: context)
+        renderer.drawValues(context: context)
 
-        _legendRenderer.renderLegend(context: context)
+        legendRenderer.renderLegend(context: context)
 
-        drawDescription(context: context)
+        drawDescription(in: context)
 
         drawMarkers(context: context)
     }
 
     /// - returns: The factor that is needed to transform values into pixels.
-    open var factor: CGFloat
+    @objc open var factor: CGFloat
     {
-        let content = _viewPortHandler.contentRect
+        let content = viewPortHandler.contentRect
         return min(content.width / 2.0, content.height / 2.0)
                 / CGFloat(_yAxis.axisRange)
     }
 
     /// - returns: The angle that each slice in the radar chart occupies.
-    open var sliceAngle: CGFloat
+    @objc open var sliceAngle: CGFloat
     {
-        return 360.0 / CGFloat(_data?.maxEntryCountSet?.entryCount ?? 0)
+        return 360.0 / CGFloat(data?.maxEntryCountSet?.entryCount ?? 0)
     }
 
     open override func indexForAngle(_ angle: CGFloat) -> Int
     {
         // take the current angle of the chart into consideration
-        let a = ChartUtils.normalizedAngleFromAngle(angle - self.rotationAngle)
+        let a = (angle - self.rotationAngle).normalizedAngle
         
         let sliceAngle = self.sliceAngle
         
-        let max = _data?.maxEntryCountSet?.entryCount ?? 0
+        let max = data?.maxEntryCountSet?.entryCount ?? 0
         
         var index = 0
         
@@ -189,14 +185,14 @@ open class RadarChartView: PieRadarChartViewBase
     }
 
     /// - returns: The object that represents all y-labels of the RadarChart.
-    open var yAxis: YAxis
+    @objc open var yAxis: YAxis
     {
         return _yAxis
     }
 
     /// Sets the number of web-lines that should be skipped on chart web before the next one is drawn. This targets the lines that come from the center of the RadarChart.
     /// if count = 1 -> 1 line is skipped in between
-    open var skipWebLineCount: Int
+    @objc open var skipWebLineCount: Int
     {
         get
         {
@@ -210,17 +206,17 @@ open class RadarChartView: PieRadarChartViewBase
     
     internal override var requiredLegendOffset: CGFloat
     {
-        return _legend.font.pointSize * 4.0
+        return legend.font.pointSize * 4.0
     }
 
     internal override var requiredBaseOffset: CGFloat
     {
-        return _xAxis.isEnabled && _xAxis.isDrawLabelsEnabled ? _xAxis.labelRotatedWidth : 10.0
+        return xAxis.isEnabled && xAxis.isDrawLabelsEnabled ? xAxis.labelRotatedWidth : 10.0
     }
 
     open override var radius: CGFloat
     {
-        let content = _viewPortHandler.contentRect
+        let content = viewPortHandler.contentRect
         return min(content.width / 2.0, content.height / 2.0)
     }
 
@@ -231,5 +227,5 @@ open class RadarChartView: PieRadarChartViewBase
     open override var chartYMin: Double { return _yAxis._axisMinimum }
     
     /// - returns: The range of y-values this chart can display.
-    open var yRange: Double { return _yAxis.axisRange }
+    @objc open var yRange: Double { return _yAxis.axisRange }
 }

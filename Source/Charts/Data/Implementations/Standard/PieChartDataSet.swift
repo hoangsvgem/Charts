@@ -12,7 +12,7 @@
 import Foundation
 import CoreGraphics
 
-open class PieChartDataSet: ChartDataSet, IPieChartDataSet
+open class PieChartDataSet: ChartDataSet, PieChartDataSetProtocol
 {
     @objc(PieChartValuePosition)
     public enum ValuePosition: Int
@@ -21,7 +21,7 @@ open class PieChartDataSet: ChartDataSet, IPieChartDataSet
         case outsideSlice
     }
     
-    fileprivate func initialize()
+    private func initialize()
     {
         self.valueTextColor = NSUIColor.white
         self.valueFont = NSUIFont.systemFont(ofSize: 13.0)
@@ -33,7 +33,7 @@ open class PieChartDataSet: ChartDataSet, IPieChartDataSet
         initialize()
     }
     
-    public override init(values: [ChartDataEntry]?, label: String?)
+    public override init(values: [ChartDataEntry], label: String)
     {
         super.init(values: values, label: label)
         initialize()
@@ -46,7 +46,7 @@ open class PieChartDataSet: ChartDataSet, IPieChartDataSet
     
     // MARK: - Styling functions and accessors
     
-    fileprivate var _sliceSpace = CGFloat(0.0)
+    private var _sliceSpace = CGFloat(0.0)
     
     /// the space in pixels between the pie-slices
     /// **default**: 0
@@ -59,16 +59,11 @@ open class PieChartDataSet: ChartDataSet, IPieChartDataSet
         }
         set
         {
-            var space = newValue
-            if space > 20.0
-            {
-                space = 20.0
+            switch newValue {
+            case ..<0.0: _sliceSpace = 0.0
+            case 20.0...: _sliceSpace = 20.0
+            default: _sliceSpace = newValue
             }
-            if space < 0.0
-            {
-                space = 0.0
-            }
-            _sliceSpace = space
         }
     }
 
@@ -105,6 +100,9 @@ open class PieChartDataSet: ChartDataSet, IPieChartDataSet
     /// the color for the slice-text labels
     open var entryLabelColor: NSUIColor? = nil
     
+    /// the color for the highlighted sector
+    open var highlightColor: NSUIColor? = nil
+    
     // MARK: - NSCopying
     
     open override func copyWithZone(_ zone: NSZone?) -> AnyObject
@@ -112,6 +110,7 @@ open class PieChartDataSet: ChartDataSet, IPieChartDataSet
         let copy = super.copyWithZone(zone) as! PieChartDataSet
         copy._sliceSpace = _sliceSpace
         copy.selectionShift = selectionShift
+        copy.highlightColor = highlightColor
         return copy
     }
 }

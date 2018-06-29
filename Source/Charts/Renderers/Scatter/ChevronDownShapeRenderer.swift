@@ -9,12 +9,13 @@
 //  https://github.com/danielgindi/Charts
 //
 import Foundation
+import CoreGraphics
 
-open class ChevronDownShapeRenderer : NSObject, IShapeRenderer
+open class ChevronDownShapeRenderer : NSObject, ShapeRenderer
 {
     open func renderShape(
         context: CGContext,
-                dataSet: IScatterChartDataSet,
+                dataSet: ScatterChartDataSetProtocol,
                 viewPortHandler: ViewPortHandler,
                 point: CGPoint,
                 color: NSUIColor)

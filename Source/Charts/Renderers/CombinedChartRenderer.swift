@@ -12,25 +12,30 @@
 import Foundation
 import CoreGraphics
 
-open class CombinedChartRenderer: DataRenderer
+open class CombinedChartRenderer: NSObject, DataRenderer
 {
-    open weak var chart: CombinedChartView?
+    public let viewPortHandler: ViewPortHandler
+    public let animator: Animator
+
+    @objc open weak var chart: CombinedChartView?
     
     /// if set to true, all values are drawn above their bars, instead of below their top
-    open var drawValueAboveBarEnabled = true
+    @objc open var drawValueAboveBarEnabled = true
     
     /// if set to true, a grey area is drawn behind each bar that indicates the maximum value
-    open var drawBarShadowEnabled = false
+    @objc open var drawBarShadowEnabled = false
     
     internal var _renderers = [DataRenderer]()
     
     internal var _drawOrder: [CombinedChartView.DrawOrder] = [.bar, .bubble, .line, .candle, .scatter]
     
-    public init(chart: CombinedChartView?, animator: Animator, viewPortHandler: ViewPortHandler?)
+    @objc public init(chart: CombinedChartView, animator: Animator, viewPortHandler: ViewPortHandler)
     {
-        super.init(animator: animator, viewPortHandler: viewPortHandler)
-        
         self.chart = chart
+        self.viewPortHandler = viewPortHandler
+        self.animator = animator
+
+        super.init()
         
         createRenderers()
     }
@@ -40,11 +45,7 @@ open class CombinedChartRenderer: DataRenderer
     {
         _renderers = [DataRenderer]()
         
-        guard let
-            chart = chart,
-            let animator = animator,
-            let viewPortHandler = self.viewPortHandler
-            else { return }
+        guard let chart = chart else { return }
 
         for order in drawOrder
         {
@@ -89,7 +90,7 @@ open class CombinedChartRenderer: DataRenderer
 
     }
     
-    open override func initBuffers()
+    open func initBuffers()
     {
         for renderer in _renderers
         {
@@ -97,7 +98,7 @@ open class CombinedChartRenderer: DataRenderer
         }
     }
     
-    open override func drawData(context: CGContext)
+    open func drawData(context: CGContext)
     {
         for renderer in _renderers
         {
@@ -105,7 +106,7 @@ open class CombinedChartRenderer: DataRenderer
         }
     }
     
-    open override func drawValues(context: CGContext)
+    open func drawValues(context: CGContext)
     {
         for renderer in _renderers
         {
@@ -113,7 +114,7 @@ open class CombinedChartRenderer: DataRenderer
         }
     }
     
-    open override func drawExtras(context: CGContext)
+    open func drawExtras(context: CGContext)
     {
         for renderer in _renderers
         {
@@ -121,7 +122,7 @@ open class CombinedChartRenderer: DataRenderer
         }
     }
     
-    open override func drawHighlighted(context: CGContext, indices: [Highlight])
+    open func drawHighlighted(context: CGContext, indices: [Highlight])
     {
         for renderer in _renderers
         {
@@ -156,8 +157,14 @@ open class CombinedChartRenderer: DataRenderer
         }
     }
 
+    open func isDrawingValuesAllowed(dataProvider: ChartDataProvider?) -> Bool
+    {
+        guard let data = dataProvider?.data else { return false }
+        return data.entryCount < Int(CGFloat(dataProvider?.maxVisibleCount ?? 0) * viewPortHandler.scaleX)
+    }
+
     /// - returns: The sub-renderer object at the specified index.
-    open func getSubRenderer(index: Int) -> DataRenderer?
+    @objc open func getSubRenderer(index: Int) -> DataRenderer?
     {
         if index >= _renderers.count || index < 0
         {
@@ -170,7 +177,7 @@ open class CombinedChartRenderer: DataRenderer
     }
 
     /// - returns: All sub-renderers.
-    open var subRenderers: [DataRenderer]
+    @objc open var subRenderers: [DataRenderer]
     {
         get { return _renderers }
         set { _renderers = newValue }
@@ -179,10 +186,10 @@ open class CombinedChartRenderer: DataRenderer
     // MARK: Accessors
     
     /// - returns: `true` if drawing values above bars is enabled, `false` ifnot
-    open var isDrawValueAboveBarEnabled: Bool { return drawValueAboveBarEnabled }
+    @objc open var isDrawValueAboveBarEnabled: Bool { return drawValueAboveBarEnabled }
     
     /// - returns: `true` if drawing shadows (maxvalue) for each bar is enabled, `false` ifnot
-    open var isDrawBarShadowEnabled: Bool { return drawBarShadowEnabled }
+    @objc open var isDrawBarShadowEnabled: Bool { return drawBarShadowEnabled }
     
     /// the order in which the provided data objects should be drawn.
     /// The earlier you place them in the provided array, the further they will be in the background.

@@ -10,6 +10,14 @@ import CoreGraphics
 
 open class CustomCombinedChartRenderer: DataRenderer
 {
+    public var viewPortHandler: ViewPortHandler
+    
+    public var animator: Animator
+    
+    public func isDrawingValuesAllowed(dataProvider: ChartDataProvider?) -> Bool {
+        //
+    }
+    
     open weak var chart: CustomCombinedChartView?
     
     /// if set to true, all values are drawn above their bars, instead of below their top
@@ -85,72 +93,72 @@ open class CustomCombinedChartRenderer: DataRenderer
         
     }
     
-    open override func initBuffers()
-    {
-        for renderer in _renderers
-        {
-            renderer.initBuffers()
-        }
-    }
-    
-    open override func drawData(context: CGContext)
-    {
-        for renderer in _renderers
-        {
-            renderer.drawData(context: context)
-        }
-    }
-    
-    open override func drawValues(context: CGContext)
-    {
-        for renderer in _renderers
-        {
-            renderer.drawValues(context: context)
-        }
-    }
-    
-    open override func drawExtras(context: CGContext)
-    {
-        for renderer in _renderers
-        {
-            renderer.drawExtras(context: context)
-        }
-    }
-    
-    open override func drawHighlighted(context: CGContext, indices: [Highlight])
-    {
-        for renderer in _renderers
-        {
-            var data: ChartData?
-            
-            if renderer is BarChartRenderer
-            {
-                data = (renderer as! BarChartRenderer).dataProvider?.barData
-            }
-            else if renderer is LineChartRenderer
-            {
-                data = (renderer as! LineChartRenderer).dataProvider?.lineData
-            }
-            else if renderer is CandleStickChartRenderer
-            {
-                data = (renderer as! CandleStickChartRenderer).dataProvider?.candleData
-            }
-            else if renderer is ScatterChartRenderer
-            {
-                data = (renderer as! ScatterChartRenderer).dataProvider?.scatterData
-            }
-            else if renderer is BubbleChartRenderer
-            {
-                data = (renderer as! BubbleChartRenderer).dataProvider?.bubbleData
-            }
-            
-            let dataIndex = data == nil ? nil : (chart?.data as? CombinedChartData)?.allData.index(of: data!)
-            
-            let dataIndices = indices.filter{ $0.dataIndex == dataIndex || $0.dataIndex == -1 }
-            
-            renderer.drawHighlighted(context: context, indices: dataIndices)
-        }
-    }
+//    open override func initBuffers()
+//    {
+//        for renderer in _renderers
+//        {
+//            renderer.initBuffers()
+//        }
+//    }
+//
+//    open override func drawData(context: CGContext)
+//    {
+//        for renderer in _renderers
+//        {
+//            renderer.drawData(context: context)
+//        }
+//    }
+//
+//    open override func drawValues(context: CGContext)
+//    {
+//        for renderer in _renderers
+//        {
+//            renderer.drawValues(context: context)
+//        }
+//    }
+//
+//    open override func drawExtras(context: CGContext)
+//    {
+//        for renderer in _renderers
+//        {
+//            renderer.drawExtras(context: context)
+//        }
+//    }
+//
+//    open override func drawHighlighted(context: CGContext, indices: [Highlight])
+//    {
+//        for renderer in _renderers
+//        {
+//            var data: ChartData?
+//
+//            if renderer is BarChartRenderer
+//            {
+//                data = (renderer as! BarChartRenderer).dataProvider?.barData
+//            }
+//            else if renderer is LineChartRenderer
+//            {
+//                data = (renderer as! LineChartRenderer).dataProvider?.lineData
+//            }
+//            else if renderer is CandleStickChartRenderer
+//            {
+//                data = (renderer as! CandleStickChartRenderer).dataProvider?.candleData
+//            }
+//            else if renderer is ScatterChartRenderer
+//            {
+//                data = (renderer as! ScatterChartRenderer).dataProvider?.scatterData
+//            }
+//            else if renderer is BubbleChartRenderer
+//            {
+//                data = (renderer as! BubbleChartRenderer).dataProvider?.bubbleData
+//            }
+//
+//            let dataIndex = data == nil ? nil : (chart?.data as? CombinedChartData)?.allData.index(of: data!)
+//
+//            let dataIndices = indices.filter{ $0.dataIndex == dataIndex || $0.dataIndex == -1 }
+//
+//            renderer.drawHighlighted(context: context, indices: dataIndices)
+//        }
+//    }
     
     /// - returns: The sub-renderer object at the specified index.
     open func getSubRenderer(index: Int) -> DataRenderer?

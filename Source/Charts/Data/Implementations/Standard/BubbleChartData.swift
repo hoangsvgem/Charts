@@ -14,22 +14,24 @@ import CoreGraphics
 
 open class BubbleChartData: BarLineScatterCandleBubbleChartData
 {
-    public override init()
+    public required init()
     {
         super.init()
     }
     
-    public override init(dataSets: [IChartDataSet]?)
+    public override init(dataSets: [ChartDataSetProtocol])
     {
         super.init(dataSets: dataSets)
     }
-    
-    /// Sets the width of the circle that surrounds the bubble when highlighted for all DataSet objects this data object contains
-    open func setHighlightCircleWidth(_ width: CGFloat)
+
+    public required init(arrayLiteral elements: ChartDataSetProtocol...)
     {
-        for set in (_dataSets as? [IBubbleChartDataSet])!
-        {
-            set.highlightCircleWidth = width
-        }
+        super.init(dataSets: elements)
+    }
+
+    /// Sets the width of the circle that surrounds the bubble when highlighted for all DataSet objects this data object contains
+    @objc open func setHighlightCircleWidth(_ width: CGFloat)
+    {
+        (_dataSets as? [BubbleChartDataSetProtocol])?.forEach { $0.highlightCircleWidth = width }
     }
 }

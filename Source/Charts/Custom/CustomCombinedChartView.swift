@@ -12,7 +12,7 @@ import CoreGraphics
 open class CustomCombinedChartView: CustomBarLineChartViewBase, CombinedChartDataProvider
 {
     /// the fill-formatter used for determining the position of the fill-line
-    internal var _fillFormatter: IFillFormatter!
+    internal var _fillFormatter: FillFormatter!
     
     /// enum that allows to specify the order in which the different data objects for the combined-chart are drawn
     @objc(CustomCombinedChartDrawOrder)
@@ -36,7 +36,7 @@ open class CustomCombinedChartView: CustomBarLineChartViewBase, CombinedChartDat
         
         _fillFormatter = DefaultFillFormatter()
         
-        renderer = CustomCombinedChartRenderer(chart: self, animator: _animator, viewPortHandler: _viewPortHandler)
+        renderer = CustomCombinedChartRenderer(chart: self, animator: chartAnimator, viewPortHandler: viewPortHandler)
     }
     
     open override var data: ChartData?
@@ -56,7 +56,7 @@ open class CustomCombinedChartView: CustomBarLineChartViewBase, CombinedChartDat
         }
     }
     
-    open var fillFormatter: IFillFormatter
+    open var fillFormatter: FillFormatter
         {
         get
         {
@@ -75,7 +75,7 @@ open class CustomCombinedChartView: CustomBarLineChartViewBase, CombinedChartDat
     /// - returns: The Highlight object (contains x-index and DataSet index) of the selected value at the given touch point inside the CombinedChart.
     open override func getHighlightByTouchPoint(_ pt: CGPoint) -> Highlight?
     {
-        if _data === nil
+        if data === nil
         {
             Swift.print("Can't select by touch. No data set.")
             return nil
@@ -102,7 +102,7 @@ open class CustomCombinedChartView: CustomBarLineChartViewBase, CombinedChartDat
         {
         get
         {
-            return _data as? CombinedChartData
+            return data as? CombinedChartData
         }
     }
     
@@ -112,11 +112,11 @@ open class CustomCombinedChartView: CustomBarLineChartViewBase, CombinedChartDat
         {
         get
         {
-            if _data === nil
+            if data === nil
             {
                 return nil
             }
-            return (_data as! CombinedChartData!).lineData
+            return (data as! CombinedChartData!).lineData
         }
     }
     
@@ -126,11 +126,11 @@ open class CustomCombinedChartView: CustomBarLineChartViewBase, CombinedChartDat
         {
         get
         {
-            if _data === nil
+            if data === nil
             {
                 return nil
             }
-            return (_data as! CombinedChartData!).barData
+            return (data as! CombinedChartData!).barData
         }
     }
     
@@ -140,11 +140,11 @@ open class CustomCombinedChartView: CustomBarLineChartViewBase, CombinedChartDat
         {
         get
         {
-            if _data === nil
+            if data === nil
             {
                 return nil
             }
-            return (_data as! CombinedChartData!).scatterData
+            return (data as! CombinedChartData?)?.scatterData
         }
     }
     
@@ -154,11 +154,11 @@ open class CustomCombinedChartView: CustomBarLineChartViewBase, CombinedChartDat
         {
         get
         {
-            if _data === nil
+            if data === nil
             {
                 return nil
             }
-            return (_data as! CombinedChartData!).candleData
+            return (data as! CombinedChartData?)?.candleData
         }
     }
     
@@ -168,11 +168,11 @@ open class CustomCombinedChartView: CustomBarLineChartViewBase, CombinedChartDat
         {
         get
         {
-            if _data === nil
+            if data === nil
             {
                 return nil
             }
-            return (_data as! CombinedChartData!).bubbleData
+            return (data as! CombinedChartData?)?.bubbleData
         }
     }
     
@@ -181,22 +181,22 @@ open class CustomCombinedChartView: CustomBarLineChartViewBase, CombinedChartDat
     /// if set to true, all values are drawn above their bars, instead of below their top
     open var drawValueAboveBarEnabled: Bool
         {
-        get { return (renderer as! CustomCombinedChartRenderer!).drawValueAboveBarEnabled }
-        set { (renderer as! CustomCombinedChartRenderer!).drawValueAboveBarEnabled = newValue }
+        get { return (renderer as! CustomCombinedChartRenderer?)!.drawValueAboveBarEnabled }
+        set { (renderer as! CustomCombinedChartRenderer?)?.drawValueAboveBarEnabled = newValue }
     }
     
     /// if set to true, a grey area is drawn behind each bar that indicates the maximum value
     open var drawBarShadowEnabled: Bool
         {
-        get { return (renderer as! CustomCombinedChartRenderer!).drawBarShadowEnabled }
-        set { (renderer as! CustomCombinedChartRenderer!).drawBarShadowEnabled = newValue }
+        get { return ((renderer as! CustomCombinedChartRenderer?)?.drawBarShadowEnabled)! }
+        set { (renderer as! CustomCombinedChartRenderer?)?.drawBarShadowEnabled = newValue }
     }
     
     /// - returns: `true` if drawing values above bars is enabled, `false` ifnot
-    open var isDrawValueAboveBarEnabled: Bool { return (renderer as! CustomCombinedChartRenderer!).drawValueAboveBarEnabled }
+    open var isDrawValueAboveBarEnabled: Bool { return (renderer as! CustomCombinedChartRenderer?)!.drawValueAboveBarEnabled }
     
     /// - returns: `true` if drawing shadows (maxvalue) for each bar is enabled, `false` ifnot
-    open var isDrawBarShadowEnabled: Bool { return (renderer as! CustomCombinedChartRenderer!).drawBarShadowEnabled }
+    open var isDrawBarShadowEnabled: Bool { return ((renderer as! CustomCombinedChartRenderer?)?.drawBarShadowEnabled)! }
     
     /// the order in which the provided data objects should be drawn.
     /// The earlier you place them in the provided array, the further they will be in the background.
@@ -205,11 +205,11 @@ open class CustomCombinedChartView: CustomBarLineChartViewBase, CombinedChartDat
         {
         get
         {
-            return (renderer as! CustomCombinedChartRenderer!).drawOrder.map { $0.rawValue }
+            return ((renderer as! CustomCombinedChartRenderer?)?.drawOrder.map { $0.rawValue })!
         }
         set
         {
-            (renderer as! CustomCombinedChartRenderer!).drawOrder = newValue.map { DrawOrder(rawValue: $0)! }
+            (renderer as! CustomCombinedChartRenderer?)?.drawOrder = newValue.map { DrawOrder(rawValue: $0)! }
         }
     }
     

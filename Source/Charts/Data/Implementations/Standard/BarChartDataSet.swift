@@ -13,9 +13,9 @@ import Foundation
 import CoreGraphics
 
 
-open class BarChartDataSet: BarLineScatterCandleBubbleChartDataSet, IBarChartDataSet
+open class BarChartDataSet: BarLineScatterCandleBubbleChartDataSet, BarChartDataSetProtocol
 {
-    fileprivate func initialize()
+    private func initialize()
     {
         self.highlightColor = NSUIColor.black
         
@@ -29,7 +29,7 @@ open class BarChartDataSet: BarLineScatterCandleBubbleChartDataSet, IBarChartDat
         initialize()
     }
     
-    public override init(values: [ChartDataEntry]?, label: String?)
+    public override init(values: [ChartDataEntry], label: String)
     {
         super.init(values: values, label: label)
         initialize()
@@ -39,79 +39,47 @@ open class BarChartDataSet: BarLineScatterCandleBubbleChartDataSet, IBarChartDat
     
     /// the maximum number of bars that are stacked upon each other, this value
     /// is calculated from the Entries that are added to the DataSet
-    fileprivate var _stackSize = 1
+    private var _stackSize = 1
     
     /// the overall entry count, including counting each stack-value individually
-    fileprivate var _entryCountStacks = 0
+    private var _entryCountStacks = 0
     
     /// Calculates the total number of entries this DataSet represents, including
     /// stacks. All values belonging to a stack are calculated separately.
-    fileprivate func calcEntryCountIncludingStacks(entries: [BarChartDataEntry])
+    private func calcEntryCountIncludingStacks(entries: [BarChartDataEntry])
     {
         _entryCountStacks = 0
         
-        for i in 0 ..< entries.count
-        {
-            if let vals = entries[i].yValues
-            {
-                _entryCountStacks += vals.count
-            }
-            else
-            {
-                _entryCountStacks += 1
-            }
-        }
+        entries.forEach { _entryCountStacks += $0.yValues?.count ?? 1 }
     }
     
     /// calculates the maximum stacksize that occurs in the Entries array of this DataSet
-    fileprivate func calcStackSize(entries: [BarChartDataEntry])
+    private func calcStackSize(entries: [BarChartDataEntry])
     {
-        for i in 0 ..< entries.count
+        for e in entries where (e.yValues?.count ?? 0) > _stackSize
         {
-            if let vals = entries[i].yValues
-            {
-                if vals.count > _stackSize
-                {
-                    _stackSize = vals.count
-                }
-            }
+            _stackSize = e.yValues!.count
         }
     }
     
     open override func calcMinMax(entry e: ChartDataEntry)
     {
-        guard let e = e as? BarChartDataEntry
+        guard let e = e as? BarChartDataEntry,
+            !e.y.isNaN
             else { return }
         
-        if !e.y.isNaN
+        if e.yValues == nil
         {
-            if e.yValues == nil
-            {
-                if e.y < _yMin
-                {
-                    _yMin = e.y
-                }
-                
-                if e.y > _yMax
-                {
-                    _yMax = e.y
-                }
-            }
-            else
-            {
-                if -e.negativeSum < _yMin
-                {
-                    _yMin = -e.negativeSum
-                }
-                
-                if e.positiveSum > _yMax
-                {
-                    _yMax = e.positiveSum
-                }
-            }
-            
-            calcMinMaxX(entry: e)
+            _yMin = min(e.y, _yMin)
+            _yMax = max(e.y, _yMax)
         }
+        else
+        {
+            _yMin = min(-e.negativeSum, _yMin)
+            _yMax = max(e.positiveSum, _yMax)
+        }
+
+        calcMinMaxX(entry: e)
     }
     
     /// - returns: The maximum number of bars that can be stacked upon another in this DataSet.
@@ -127,7 +95,7 @@ open class BarChartDataSet: BarLineScatterCandleBubbleChartDataSet, IBarChartDat
     }
     
     /// - returns: The overall entry count, including counting each stack-value individually
-    open var entryCountStacks: Int
+    @objc open var entryCountStacks: Int
     {
         return _entryCountStacks
     }

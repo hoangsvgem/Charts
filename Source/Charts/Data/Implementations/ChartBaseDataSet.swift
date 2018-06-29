@@ -13,7 +13,7 @@ import Foundation
 import CoreGraphics
 
 
-open class ChartBaseDataSet: NSObject, IChartDataSet
+open class ChartBaseDataSet: NSObject, ChartDataSetProtocol
 {
     public required override init()
     {
@@ -24,7 +24,7 @@ open class ChartBaseDataSet: NSObject, IChartDataSet
         valueColors.append(NSUIColor.black)
     }
     
-    public init(label: String?)
+    @objc public init(label: String)
     {
         super.init()
         
@@ -235,7 +235,7 @@ open class ChartBaseDataSet: NSObject, IChartDataSet
     /// Sets colors to a single color a specific alpha value.
     /// - parameter color: the color to set
     /// - parameter alpha: alpha to apply to the set `color`
-    open func setColor(_ color: NSUIColor, alpha: CGFloat)
+    @objc open func setColor(_ color: NSUIColor, alpha: CGFloat)
     {
         setColor(color.withAlphaComponent(alpha))
     }
@@ -243,7 +243,7 @@ open class ChartBaseDataSet: NSObject, IChartDataSet
     /// Sets colors with a specific alpha value.
     /// - parameter colors: the colors to set
     /// - parameter alpha: alpha to apply to the set `colors`
-    open func setColors(_ colors: [NSUIColor], alpha: CGFloat)
+    @objc open func setColors(_ colors: [NSUIColor], alpha: CGFloat)
     {
         var colorsWithAlpha = colors
         
@@ -268,35 +268,10 @@ open class ChartBaseDataSet: NSObject, IChartDataSet
     
     /// - returns: `true` if value highlighting is enabled for this dataset
     open var isHighlightEnabled: Bool { return highlightEnabled }
-    
+        
     /// Custom formatter that is used instead of the auto-formatter if set
-    internal var _valueFormatter: IValueFormatter?
-    
-    /// Custom formatter that is used instead of the auto-formatter if set
-    open var valueFormatter: IValueFormatter?
-    {
-        get
-        {
-            if needsFormatter
-            {
-                return ChartUtils.defaultValueFormatter()
-            }
-            
-            return _valueFormatter
-        }
-        set
-        {
-            if newValue == nil { return }
-            
-            _valueFormatter = newValue
-        }
-    }
-    
-    open var needsFormatter: Bool
-    {
-        return _valueFormatter == nil
-    }
-    
+    open lazy var valueFormatter: ValueFormatter = DefaultValueFormatter()
+
     /// Sets/get a single color for value text.
     /// Setting the color clears the colors array and adds a single color.
     /// Getting will return the first color in the array.
@@ -411,7 +386,7 @@ open class ChartBaseDataSet: NSObject, IChartDataSet
     
     // MARK: - NSCopying
     
-    open func copyWithZone(_ zone: NSZone?) -> AnyObject
+    @objc open func copyWithZone(_ zone: NSZone?) -> AnyObject
     {
         let copy = type(of: self).init()
         
@@ -422,5 +397,3 @@ open class ChartBaseDataSet: NSObject, IChartDataSet
         return copy
     }
 }
-
-

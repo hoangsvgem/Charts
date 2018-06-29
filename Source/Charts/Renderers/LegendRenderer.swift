@@ -17,43 +17,41 @@ import CoreGraphics
 #endif
 
 @objc(ChartLegendRenderer)
-open class LegendRenderer: Renderer
+open class LegendRenderer: NSObject, Renderer
 {
-    /// the legend object this renderer renders
-    open var legend: Legend?
+    @objc public let viewPortHandler: ViewPortHandler
 
-    public init(viewPortHandler: ViewPortHandler?, legend: Legend?)
+    /// the legend object this renderer renders
+    @objc open var legend: Legend?
+
+    @objc public init(viewPortHandler: ViewPortHandler, legend: Legend?)
     {
-        super.init(viewPortHandler: viewPortHandler)
-        
+        self.viewPortHandler = viewPortHandler
         self.legend = legend
+
+        super.init()
     }
 
     /// Prepares the legend and calculates all needed forms, labels and colors.
-    open func computeLegend(data: ChartData)
+    @objc open func computeLegend(data: ChartData)
     {
-        guard
-            let legend = legend,
-            let viewPortHandler = self.viewPortHandler
-            else { return }
+        guard let legend = legend else { return }
         
         if !legend.isLegendCustom
         {
             var entries: [LegendEntry] = []
             
             // loop for building up the colors and labels used in the legend
-            for i in 0..<data.dataSetCount
-            {
-                let dataSet = data.getDataSetByIndex(i)!
-                
+            for dataSet in data
+            {                
                 var clrs: [NSUIColor] = dataSet.colors
                 let entryCount = dataSet.entryCount
                 
                 // if we have a barchart with stacked bars
-                if dataSet is IBarChartDataSet &&
-                    (dataSet as! IBarChartDataSet).isStacked
+                if dataSet is BarChartDataSetProtocol &&
+                    (dataSet as! BarChartDataSetProtocol).isStacked
                 {
-                    let bds = dataSet as! IBarChartDataSet
+                    let bds = dataSet as! BarChartDataSetProtocol
                     var sLabels = bds.stackLabels
                     
                     for j in 0..<min(clrs.count, bds.stackSize)
@@ -88,9 +86,9 @@ open class LegendRenderer: Renderer
                         )
                     }
                 }
-                else if dataSet is IPieChartDataSet
+                else if dataSet is PieChartDataSetProtocol
                 {
-                    let pds = dataSet as! IPieChartDataSet
+                    let pds = dataSet as! PieChartDataSetProtocol
                     
                     for j in 0..<min(clrs.count, entryCount)
                     {
@@ -124,10 +122,10 @@ open class LegendRenderer: Renderer
                         )
                     }
                 }
-                else if dataSet is ICandleChartDataSet &&
-                    (dataSet as! ICandleChartDataSet).decreasingColor != nil
+                else if dataSet is CandleChartDataSetProtocol &&
+                    (dataSet as! CandleChartDataSetProtocol).decreasingColor != nil
                 {
-                    let candleDataSet = dataSet as! ICandleChartDataSet
+                    let candleDataSet = dataSet as! CandleChartDataSetProtocol
                     
                     entries.append(
                         LegendEntry(
@@ -192,12 +190,9 @@ open class LegendRenderer: Renderer
         legend.calculateDimensions(labelFont: legend.font, viewPortHandler: viewPortHandler)
     }
     
-    open func renderLegend(context: CGContext)
+    @objc open func renderLegend(context: CGContext)
     {
-        guard
-            let legend = legend,
-            let viewPortHandler = self.viewPortHandler
-            else { return }
+        guard let legend = legend else { return }
         
         if !legend.enabled
         {
@@ -468,7 +463,7 @@ open class LegendRenderer: Renderer
                     
                     if direction == .rightToLeft
                     {
-                        posX -= (e.label as NSString!).size(attributes: [NSFontAttributeName: labelFont]).width
+                        posX -= (e.label! as NSString).size(withAttributes: [.font: labelFont]).width
                     }
                     
                     if !wasStacked
@@ -494,10 +489,10 @@ open class LegendRenderer: Renderer
         }
     }
 
-    fileprivate var _formLineSegmentsBuffer = [CGPoint](repeating: CGPoint(), count: 2)
+    private var _formLineSegmentsBuffer = [CGPoint](repeating: CGPoint(), count: 2)
     
     /// Draws the Legend-form at the given position with the color at the given index.
-    open func drawForm(
+    @objc open func drawForm(
         context: CGContext,
         x: CGFloat,
         y: CGFloat,
@@ -569,8 +564,8 @@ open class LegendRenderer: Renderer
     }
 
     /// Draws the provided label at the given position.
-    open func drawLabel(context: CGContext, x: CGFloat, y: CGFloat, label: String, font: NSUIFont, textColor: NSUIColor)
+    @objc open func drawLabel(context: CGContext, x: CGFloat, y: CGFloat, label: String, font: NSUIFont, textColor: NSUIColor)
     {
-        ChartUtils.drawText(context: context, text: label, point: CGPoint(x: x, y: y), align: .left, attributes: [NSFontAttributeName: font, NSForegroundColorAttributeName: textColor])
+        context.drawText(label, at: CGPoint(x: x, y: y), align: .left, attributes: [.font: font, .foregroundColor: textColor])
     }
 }

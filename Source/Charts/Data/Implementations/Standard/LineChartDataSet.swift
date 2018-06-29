@@ -13,7 +13,7 @@ import Foundation
 import CoreGraphics
 
 
-open class LineChartDataSet: LineRadarChartDataSet, ILineChartDataSet
+open class LineChartDataSet: LineRadarChartDataSet, LineChartDataSetProtocol
 {
     @objc(LineChartMode)
     public enum Mode: Int
@@ -24,7 +24,7 @@ open class LineChartDataSet: LineRadarChartDataSet, ILineChartDataSet
         case horizontalBezier
     }
     
-    fileprivate func initialize()
+    private func initialize()
     {
         // default color
         circleColors.append(NSUIColor(red: 140.0/255.0, green: 234.0/255.0, blue: 255.0/255.0, alpha: 1.0))
@@ -36,7 +36,7 @@ open class LineChartDataSet: LineRadarChartDataSet, ILineChartDataSet
         initialize()
     }
     
-    public override init(values: [ChartDataEntry]?, label: String?)
+    public override init(values: [ChartDataEntry], label: String)
     {
         super.init(values: values, label: label)
         initialize()
@@ -51,7 +51,7 @@ open class LineChartDataSet: LineRadarChartDataSet, ILineChartDataSet
     /// **default**: Linear
     open var mode: Mode = Mode.linear
     
-    fileprivate var _cubicIntensity = CGFloat(0.2)
+    private var _cubicIntensity = CGFloat(0.2)
     
     /// Intensity for cubic lines (min = 0.05, max = 1)
     ///
@@ -64,50 +64,14 @@ open class LineChartDataSet: LineRadarChartDataSet, ILineChartDataSet
         }
         set
         {
-            _cubicIntensity = newValue
-            if _cubicIntensity > 1.0
-            {
-                _cubicIntensity = 1.0
-            }
-            if _cubicIntensity < 0.05
-            {
-                _cubicIntensity = 0.05
+            switch newValue {
+            case ..<0.05: _cubicIntensity = 0.05
+            case 1.0...: _cubicIntensity = 1.0
+            default: _cubicIntensity = newValue
             }
         }
     }
-    
-    @available(*, deprecated: 1.0, message: "Use `mode` instead.")
-    open var drawCubicEnabled: Bool
-    {
-        get
-        {
-            return mode == .cubicBezier
-        }
-        set
-        {
-            mode = newValue ? LineChartDataSet.Mode.cubicBezier : LineChartDataSet.Mode.linear
-        }
-    }
-    
-    @available(*, deprecated: 1.0, message: "Use `mode` instead.")
-    open var isDrawCubicEnabled: Bool { return drawCubicEnabled }
-    
-    @available(*, deprecated: 1.0, message: "Use `mode` instead.")
-    open var drawSteppedEnabled: Bool
-    {
-        get
-        {
-            return mode == .stepped
-        }
-        set
-        {
-            mode = newValue ? LineChartDataSet.Mode.stepped : LineChartDataSet.Mode.linear
-        }
-    }
-    
-    @available(*, deprecated: 1.0, message: "Use `mode` instead.")
-    open var isDrawSteppedEnabled: Bool { return drawSteppedEnabled }
-    
+        
     /// The radius of the drawn circles.
     open var circleRadius = CGFloat(8.0)
     
@@ -176,10 +140,10 @@ open class LineChartDataSet: LineRadarChartDataSet, ILineChartDataSet
     open var lineCapType = CGLineCap.butt
     
     /// formatter for customizing the position of the fill-line
-    fileprivate var _fillFormatter: IFillFormatter = DefaultFillFormatter()
+    private var _fillFormatter: FillFormatter = DefaultFillFormatter()
     
-    /// Sets a custom IFillFormatter to the chart that handles the position of the filled-line for each DataSet. Set this to null to use the default logic.
-    open var fillFormatter: IFillFormatter?
+    /// Sets a custom FillFormatterProtocol to the chart that handles the position of the filled-line for each DataSet. Set this to null to use the default logic.
+    open var fillFormatter: FillFormatter?
     {
         get
         {
@@ -187,14 +151,7 @@ open class LineChartDataSet: LineRadarChartDataSet, ILineChartDataSet
         }
         set
         {
-            if newValue == nil
-            {
-                _fillFormatter = DefaultFillFormatter()
-            }
-            else
-            {
-                _fillFormatter = newValue!
-            }
+            _fillFormatter = newValue ?? DefaultFillFormatter()
         }
     }
     

@@ -18,10 +18,10 @@ open class BubbleChartView: BarLineChartViewBase, BubbleChartDataProvider
     {
         super.initialize()
         
-        renderer = BubbleChartRenderer(dataProvider: self, animator: _animator, viewPortHandler: _viewPortHandler)
+        renderer = BubbleChartRenderer(dataProvider: self, animator: chartAnimator, viewPortHandler: viewPortHandler)
     }
     
-    // MARK: - BubbleChartDataProbider
+    // MARK: - BubbleChartDataProvider
     
-    open var bubbleData: BubbleChartData? { return _data as? BubbleChartData }
+    open var bubbleData: BubbleChartData? { return data as? BubbleChartData }
 }

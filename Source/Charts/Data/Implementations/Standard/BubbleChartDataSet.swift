@@ -13,14 +13,14 @@ import Foundation
 import CoreGraphics
 
 
-open class BubbleChartDataSet: BarLineScatterCandleBubbleChartDataSet, IBubbleChartDataSet
+open class BubbleChartDataSet: BarLineScatterCandleBubbleChartDataSet, BubbleChartDataSetProtocol
 {
     // MARK: - Data functions and accessors
     
     internal var _maxSize = CGFloat(0.0)
     
     open var maxSize: CGFloat { return _maxSize }
-    open var normalizeSizeEnabled: Bool = true
+    @objc open var normalizeSizeEnabled: Bool = true
     open var isNormalizeSizeEnabled: Bool { return normalizeSizeEnabled }
     
     open override func calcMinMax(entry e: ChartDataEntry)
@@ -30,12 +30,7 @@ open class BubbleChartDataSet: BarLineScatterCandleBubbleChartDataSet, IBubbleCh
         
         super.calcMinMax(entry: e)
         
-        let size = e.size
-        
-        if size > _maxSize
-        {
-            _maxSize = size
-        }
+        _maxSize = max(e.size, maxSize)
     }
     
     // MARK: - Styling functions and accessors

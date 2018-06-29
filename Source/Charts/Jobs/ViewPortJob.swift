@@ -16,31 +16,31 @@ import CoreGraphics
 @objc(ChartViewPortJob)
 open class ViewPortJob: NSObject
 {
-    internal var point: CGPoint = CGPoint()
-    internal weak var viewPortHandler: ViewPortHandler?
-    internal var xValue: Double = 0.0
-    internal var yValue: Double = 0.0
-    internal weak var transformer: Transformer?
-    internal weak var view: ChartViewBase?
-    
-    public init(
+    internal var point: CGPoint = .zero
+    internal unowned var viewPortHandler: ViewPortHandler
+    internal var xValue = 0.0
+    internal var yValue = 0.0
+    internal unowned var transformer: Transformer
+    internal unowned var view: ChartViewBase
+
+    @objc public init(
         viewPortHandler: ViewPortHandler,
         xValue: Double,
         yValue: Double,
         transformer: Transformer,
         view: ChartViewBase)
     {
-        super.init()
-        
         self.viewPortHandler = viewPortHandler
         self.xValue = xValue
         self.yValue = yValue
         self.transformer = transformer
         self.view = view
+
+        super.init()
     }
     
-    open func doJob()
+    @objc open func doJob()
     {
-        // Override this
+        fatalError("`doJob()` must be overridden by subclasses")
     }
 }
