@@ -25,12 +25,15 @@ open class CandleChartDataEntry: ChartDataEntry
     /// open value
     open var open = Double(0.0)
     
+    /// open value
+    open var middle = Double(0.0)
+    
     public required init()
     {
         super.init()
     }
     
-    public init(x: Double, shadowH: Double, shadowL: Double, open: Double, close: Double)
+    public init(x: Double, shadowH: Double, shadowL: Double, open: Double, middle: Double, close: Double)
     {
         super.init(x: x, y: (shadowH + shadowL) / 2.0)
         
@@ -38,9 +41,10 @@ open class CandleChartDataEntry: ChartDataEntry
         self.low = shadowL
         self.open = open
         self.close = close
+        self.middle = middle
     }
     
-    public init(x: Double, shadowH: Double, shadowL: Double, open: Double, close: Double, data: AnyObject?)
+    public init(x: Double, shadowH: Double, shadowL: Double, open: Double, middle: Double, close: Double, data: AnyObject?)
     {
         super.init(x: x, y: (shadowH + shadowL) / 2.0, data: data)
         
@@ -48,9 +52,10 @@ open class CandleChartDataEntry: ChartDataEntry
         self.low = shadowL
         self.open = open
         self.close = close
+        self.middle = middle
     }
     
-    public init(x: Double, shadowH: Double, shadowL: Double, open: Double, close: Double, icon: NSUIImage?)
+    public init(x: Double, shadowH: Double, shadowL: Double, open: Double, middle: Double, close: Double, icon: NSUIImage?)
     {
         super.init(x: x, y: (shadowH + shadowL) / 2.0, icon: icon)
         
@@ -58,9 +63,10 @@ open class CandleChartDataEntry: ChartDataEntry
         self.low = shadowL
         self.open = open
         self.close = close
+        self.middle = middle
     }
     
-    public init(x: Double, shadowH: Double, shadowL: Double, open: Double, close: Double, icon: NSUIImage?, data: AnyObject?)
+    public init(x: Double, shadowH: Double, shadowL: Double, open: Double, middle: Double, close: Double, icon: NSUIImage?, data: AnyObject?)
     {
         super.init(x: x, y: (shadowH + shadowL) / 2.0, icon: icon, data: data)
         
@@ -68,6 +74,7 @@ open class CandleChartDataEntry: ChartDataEntry
         self.low = shadowL
         self.open = open
         self.close = close
+        self.middle = middle
     }
     
     /// - returns: The overall range (difference) between shadow-high and shadow-low.
@@ -104,6 +111,7 @@ open class CandleChartDataEntry: ChartDataEntry
         copy.low = low
         copy.open = open
         copy.close = close
+        copy.middle = middle
         return copy
     }
 }

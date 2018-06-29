@@ -41,6 +41,7 @@ open class CandleStickChartRenderer: LineScatterCandleRadarRenderer
         }
     }
     
+    fileprivate var _linePoints = [CGPoint](repeating: CGPoint(), count: 6)
     fileprivate var _shadowPoints = [CGPoint](repeating: CGPoint(), count: 4)
     fileprivate var _rangePoints = [CGPoint](repeating: CGPoint(), count: 2)
     fileprivate var _openPoints = [CGPoint](repeating: CGPoint(), count: 2)
@@ -78,6 +79,7 @@ open class CandleStickChartRenderer: LineScatterCandleRadarRenderer
             let close = e.close
             let high = e.high
             let low = e.low
+            let middle = e.middle
             
             if showCandleBar
             {
@@ -187,6 +189,26 @@ open class CandleStickChartRenderer: LineScatterCandleRadarRenderer
                     context.setStrokeColor(color.cgColor)
                     context.stroke(_bodyRect)
                 }
+                
+                // draw high low middle
+                
+                _linePoints[0].x = CGFloat(xPos) - 0.25 * (1.0 - 2.0 * barSpace)
+                _linePoints[1].x = CGFloat(xPos) + 0.25 * (1.0 - 2.0 * barSpace)
+                _linePoints[2].x = CGFloat(xPos) - 0.5 + barSpace
+                _linePoints[3].x = CGFloat(xPos) + 0.5 - barSpace
+                _linePoints[4].x = CGFloat(xPos) - 0.25 * (1.0 - 2.0 * barSpace)
+                _linePoints[5].x = CGFloat(xPos) + 0.25 * (1.0 - 2.0 * barSpace)
+                
+                _linePoints[0].y = CGFloat(high * phaseY)
+                _linePoints[1].y = CGFloat(high * phaseY)
+                _linePoints[2].y = CGFloat(middle * phaseY)
+                _linePoints[3].y = CGFloat(middle * phaseY)
+                _linePoints[4].y = CGFloat(low * phaseY)
+                _linePoints[5].y = CGFloat(low * phaseY)
+                
+                trans.pointValuesToPixel(&_linePoints)
+                context.setStrokeColor(shadowColor.cgColor)
+                context.strokeLineSegments(between: _linePoints)
             }
             else
             {
