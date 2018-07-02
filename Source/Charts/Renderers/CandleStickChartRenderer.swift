@@ -65,10 +65,9 @@ open class CandleStickChartRenderer: LineScatterCandleRadarRenderer
         _xBounds.set(chart: dataProvider, dataSet: dataSet, animator: animator)
         
         context.saveGState()
-        
         for j in stride(from: _xBounds.min, through: _xBounds.range + _xBounds.min, by: 1) {
             context.setLineWidth(dataSet.shadowWidth)
-
+            
             // get the entry
             guard let e = dataSet.entryForIndex(j) as? CandleChartDataEntry else { continue }
             
@@ -82,64 +81,6 @@ open class CandleStickChartRenderer: LineScatterCandleRadarRenderer
             
             if showCandleBar
             {
-                // calculate the shadow
-                
-                _shadowPoints[0].x = CGFloat(xPos)
-                _shadowPoints[1].x = CGFloat(xPos)
-                _shadowPoints[2].x = CGFloat(xPos)
-                _shadowPoints[3].x = CGFloat(xPos)
-                
-                if open > close
-                {
-                    _shadowPoints[0].y = CGFloat(high * phaseY)
-                    _shadowPoints[1].y = CGFloat(open * phaseY)
-                    _shadowPoints[2].y = CGFloat(low * phaseY)
-                    _shadowPoints[3].y = CGFloat(close * phaseY)
-                }
-                else if open < close
-                {
-                    _shadowPoints[0].y = CGFloat(high * phaseY)
-                    _shadowPoints[1].y = CGFloat(close * phaseY)
-                    _shadowPoints[2].y = CGFloat(low * phaseY)
-                    _shadowPoints[3].y = CGFloat(open * phaseY)
-                }
-                else
-                {
-                    _shadowPoints[0].y = CGFloat(high * phaseY)
-                    _shadowPoints[1].y = CGFloat(open * phaseY)
-                    _shadowPoints[2].y = CGFloat(low * phaseY)
-                    _shadowPoints[3].y = _shadowPoints[1].y
-                }
-                
-                trans.pointValuesToPixel(&_shadowPoints)
-                
-                // draw the shadows
-                
-                var shadowColor: NSUIColor! = nil
-                if dataSet.shadowColorSameAsCandle
-                {
-                    if open > close
-                    {
-                        shadowColor = dataSet.decreasingColor ?? dataSet.color(atIndex: j)
-                    }
-                    else if open < close
-                    {
-                        shadowColor = dataSet.increasingColor ?? dataSet.color(atIndex: j)
-                    }
-                    else
-                    {
-                        shadowColor = dataSet.neutralColor ?? dataSet.color(atIndex: j)
-                    }
-                }
-                
-                if shadowColor === nil
-                {
-                    shadowColor = dataSet.shadowColor ?? dataSet.color(atIndex: j)
-                }
-                
-                context.setStrokeColor(shadowColor.cgColor)
-                context.strokeLineSegments(between: _shadowPoints)
-                
                 // calculate the body
                 
                 _bodyRect.origin.x = CGFloat(xPos) - 0.5 + barSpace
@@ -189,41 +130,118 @@ open class CandleStickChartRenderer: LineScatterCandleRadarRenderer
                     context.stroke(_bodyRect)
                 }
                 
+                // calculate the shadow
+                
+                _shadowPoints[0].x = CGFloat(xPos)
+                _shadowPoints[1].x = CGFloat(xPos)
+                _shadowPoints[2].x = CGFloat(xPos)
+                _shadowPoints[3].x = CGFloat(xPos)
+                
+                if open > close
+                {
+                    _shadowPoints[0].y = CGFloat(high * phaseY)
+                    _shadowPoints[1].y = CGFloat(open * phaseY)
+                    _shadowPoints[2].y = CGFloat(low * phaseY)
+                    _shadowPoints[3].y = CGFloat(close * phaseY)
+                }
+                else if open < close
+                {
+                    _shadowPoints[0].y = CGFloat(high * phaseY)
+                    _shadowPoints[1].y = CGFloat(close * phaseY)
+                    _shadowPoints[2].y = CGFloat(low * phaseY)
+                    _shadowPoints[3].y = CGFloat(open * phaseY)
+                }
+                else
+                {
+                    _shadowPoints[0].y = CGFloat(high * phaseY)
+                    _shadowPoints[1].y = CGFloat(open * phaseY)
+                    _shadowPoints[2].y = CGFloat(low * phaseY)
+                    _shadowPoints[3].y = _shadowPoints[1].y
+                }
+                
+                trans.pointValuesToPixel(&_shadowPoints)
+                
+                // draw the shadows
+                
+                var shadowColor: NSUIColor! = nil
+                shadowColor = dataSet.shadowColor
+                //                if dataSet.shadowColorSameAsCandle
+                //                {
+                //                    if open > close
+                //                    {
+                //                        shadowColor = dataSet.decreasingColor ?? dataSet.color(atIndex: j)
+                //                    }
+                //                    else if open < close
+                //                    {
+                //                        shadowColor = dataSet.increasingColor ?? dataSet.color(atIndex: j)
+                //                    }
+                //                    else
+                //                    {
+                //                        shadowColor = dataSet.neutralColor ?? dataSet.color(atIndex: j)
+                //                    }
+                //                }
+                //
+                //                if shadowColor === nil
+                //                {
+                //                    shadowColor = dataSet.shadowColor ?? dataSet.color(atIndex: j)
+                //                }
+                
+                context.setStrokeColor(shadowColor.cgColor)
+                context.strokeLineSegments(between: _shadowPoints)
+                
                 // draw high low middle
                 
-                _linePoints[0].x = CGFloat(xPos) - 0.25 * (1.0 - 2.0 * barSpace)
-                _linePoints[1].x = CGFloat(xPos) + 0.25 * (1.0 - 2.0 * barSpace)
+                var isDrawHigh = true
+                var isDrawLow = true
+                if open > close {
+                    isDrawHigh = open == high ? false : true
+                    isDrawLow = close == open ? false : true
+                }
+                else if open < close {
+                    isDrawHigh = close == high ? false : true
+                    isDrawLow = low == open ? false : true
+                }
+                else {
+                    isDrawHigh = open == high ? false : true
+                    isDrawLow = low == open ? false : true
+                }
+                
+                if isDrawHigh {
+                    _linePoints[0].x = CGFloat(xPos) - 0.25 * (1.0 - 2.0 * barSpace)
+                    _linePoints[1].x = CGFloat(xPos) + 0.25 * (1.0 - 2.0 * barSpace)
+                    _linePoints[0].y = CGFloat(high * phaseY)
+                    _linePoints[1].y = CGFloat(high * phaseY)
+                }
+                if isDrawLow {
+                    _linePoints[4].x = CGFloat(xPos) - 0.25 * (1.0 - 2.0 * barSpace)
+                    _linePoints[5].x = CGFloat(xPos) + 0.25 * (1.0 - 2.0 * barSpace)
+                    _linePoints[4].y = CGFloat(low * phaseY)
+                    _linePoints[5].y = CGFloat(low * phaseY)
+                }
+                
                 _linePoints[2].x = CGFloat(xPos) - 0.5 + barSpace
                 _linePoints[3].x = CGFloat(xPos) + 0.5 - barSpace
-                _linePoints[4].x = CGFloat(xPos) - 0.25 * (1.0 - 2.0 * barSpace)
-                _linePoints[5].x = CGFloat(xPos) + 0.25 * (1.0 - 2.0 * barSpace)
-                
-                _linePoints[0].y = CGFloat(high * phaseY)
-                _linePoints[1].y = CGFloat(high * phaseY)
                 _linePoints[2].y = CGFloat(middle * phaseY)
                 _linePoints[3].y = CGFloat(middle * phaseY)
-                _linePoints[4].y = CGFloat(low * phaseY)
-                _linePoints[5].y = CGFloat(low * phaseY)
+                
                 
                 trans.pointValuesToPixel(&_linePoints)
                 context.setStrokeColor(shadowColor.cgColor)
-                context.setLineWidth(2.0)
+                context.setLineWidth(2.5)
                 context.strokeLineSegments(between: _linePoints)
                 
                 // draw bounds to body
                 
-                _bodyRect.origin.x = CGFloat(xPos) - 0.5 + barSpace - 0.001
-                _bodyRect.origin.y = CGFloat(close * phaseY) - 0.001
-                _bodyRect.size.width = (CGFloat(xPos) + 0.5 - barSpace) - _bodyRect.origin.x + 0.001
-                _bodyRect.size.height = CGFloat(open * phaseY) - _bodyRect.origin.y + 0.001
+                _bodyRect.origin.x = CGFloat(xPos) - 0.5 + barSpace - 0.01
+                _bodyRect.origin.y = CGFloat(close * phaseY) - 0.01
+                _bodyRect.size.width = (CGFloat(xPos) + 0.5 - barSpace) - _bodyRect.origin.x + 0.01
+                _bodyRect.size.height = CGFloat(open * phaseY) - _bodyRect.origin.y + 0.01
                 
+                context.setStrokeColor(shadowColor.cgColor)
                 trans.rectValueToPixel(&_bodyRect)
-                context.setStrokeColor((dataSet.increasingColor?.cgColor)!)
                 context.setLineWidth(dataSet.shadowWidth)
                 context.stroke(_bodyRect)
-            }
-            else
-            {
+            } else {
                 _rangePoints[0].x = CGFloat(xPos)
                 _rangePoints[0].y = CGFloat(high * phaseY)
                 _rangePoints[1].x = CGFloat(xPos)
