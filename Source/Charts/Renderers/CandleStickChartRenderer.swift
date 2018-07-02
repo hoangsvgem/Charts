@@ -66,10 +66,9 @@ open class CandleStickChartRenderer: LineScatterCandleRadarRenderer
         
         context.saveGState()
         
-        context.setLineWidth(dataSet.shadowWidth)
-        
-        for j in stride(from: _xBounds.min, through: _xBounds.range + _xBounds.min, by: 1)
-        {
+        for j in stride(from: _xBounds.min, through: _xBounds.range + _xBounds.min, by: 1) {
+            context.setLineWidth(dataSet.shadowWidth)
+
             // get the entry
             guard let e = dataSet.entryForIndex(j) as? CandleChartDataEntry else { continue }
             
@@ -208,6 +207,7 @@ open class CandleStickChartRenderer: LineScatterCandleRadarRenderer
                 
                 trans.pointValuesToPixel(&_linePoints)
                 context.setStrokeColor(shadowColor.cgColor)
+                context.setLineWidth(2.0)
                 context.strokeLineSegments(between: _linePoints)
             }
             else
