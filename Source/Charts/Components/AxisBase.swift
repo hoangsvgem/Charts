@@ -251,9 +251,10 @@ open class AxisBase: ComponentBase
     open var isForceLabelsEnabled: Bool { return forceLabelsEnabled }
     
     /// Adds a new ChartLimitLine to this axis.
-    open func addLimitLine(_ line: ChartLimitLine)
-    {
-        _limitLines.append(line)
+    open func addLimitLine(_ line: ChartLimitLine) {
+        if line != nil {
+            _limitLines.append(line)
+        }
     }
     
     /// Removes the specified ChartLimitLine from the axis.
