@@ -209,6 +209,18 @@ open class CandleStickChartRenderer: LineScatterCandleRadarRenderer
                 context.setStrokeColor(shadowColor.cgColor)
                 context.setLineWidth(2.0)
                 context.strokeLineSegments(between: _linePoints)
+                
+                // draw bounds to body
+                
+                _bodyRect.origin.x = CGFloat(xPos) - 0.5 + barSpace - 0.001
+                _bodyRect.origin.y = CGFloat(close * phaseY) - 0.001
+                _bodyRect.size.width = (CGFloat(xPos) + 0.5 - barSpace) - _bodyRect.origin.x + 0.001
+                _bodyRect.size.height = CGFloat(open * phaseY) - _bodyRect.origin.y + 0.001
+                
+                trans.rectValueToPixel(&_bodyRect)
+                context.setStrokeColor((dataSet.increasingColor?.cgColor)!)
+                context.setLineWidth(dataSet.shadowWidth)
+                context.stroke(_bodyRect)
             }
             else
             {
