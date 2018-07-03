@@ -232,10 +232,10 @@ open class CandleStickChartRenderer: LineScatterCandleRadarRenderer
                 
                 // draw bounds to body
                 
-                _bodyRect.origin.x = CGFloat(xPos) - 0.5 + barSpace - 0.01
-                _bodyRect.origin.y = CGFloat(close * phaseY) - 0.01
-                _bodyRect.size.width = (CGFloat(xPos) + 0.5 - barSpace) - _bodyRect.origin.x + 0.01
-                _bodyRect.size.height = CGFloat(open * phaseY) - _bodyRect.origin.y + 0.01
+                _bodyRect.origin.x = CGFloat(xPos) - 0.5 + barSpace
+                _bodyRect.origin.y = CGFloat(close * phaseY)
+                _bodyRect.size.width = (CGFloat(xPos) + 0.5 - barSpace) - _bodyRect.origin.x
+                _bodyRect.size.height = CGFloat(open * phaseY) - _bodyRect.origin.y
                 
                 context.setStrokeColor(shadowColor.cgColor)
                 trans.rectValueToPixel(&_bodyRect)
