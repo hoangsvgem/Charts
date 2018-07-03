@@ -82,6 +82,7 @@ open class CandleStickChartRenderer: LineScatterCandleRadarRenderer
             if showCandleBar
             {
                 // calculate the body
+                let color = e.backgroundColor
                 
                 _bodyRect.origin.x = CGFloat(xPos) - 0.5 + barSpace
                 _bodyRect.origin.y = CGFloat(close * phaseY)
@@ -89,47 +90,51 @@ open class CandleStickChartRenderer: LineScatterCandleRadarRenderer
                 _bodyRect.size.height = CGFloat(open * phaseY) - _bodyRect.origin.y
                 
                 trans.rectValueToPixel(&_bodyRect)
+                context.setStrokeColor(color.cgColor)
+                context.stroke(_bodyRect)
                 
                 // draw body differently for increasing and decreasing entry
                 
-                if open > close
-                {
-                    let color = dataSet.decreasingColor ?? dataSet.color(atIndex: j)
-                    
-                    if dataSet.isDecreasingFilled
-                    {
-                        context.setFillColor(color.cgColor)
-                        context.fill(_bodyRect)
-                    }
-                    else
-                    {
-                        context.setStrokeColor(color.cgColor)
-                        context.stroke(_bodyRect)
-                    }
-                }
-                else if open < close
-                {
-                    let color = dataSet.increasingColor ?? dataSet.color(atIndex: j)
-                    
-                    if dataSet.isIncreasingFilled
-                    {
-                        context.setFillColor(color.cgColor)
-                        context.fill(_bodyRect)
-                    }
-                    else
-                    {
-                        context.setStrokeColor(color.cgColor)
-                        context.stroke(_bodyRect)
-                    }
-                }
-                else
-                {
-                    let color = dataSet.neutralColor ?? dataSet.color(atIndex: j)
-                    
-                    context.setStrokeColor(color.cgColor)
-                    context.stroke(_bodyRect)
-                }
+//                if open > close
+//                {
+//                    let color = dataSet.decreasingColor ?? dataSet.color(atIndex: j)
+//
+//                    if dataSet.isDecreasingFilled
+//                    {
+//                        context.setFillColor(color.cgColor)
+//                        context.fill(_bodyRect)
+//                    }
+//                    else
+//                    {
+//                        context.setStrokeColor(color.cgColor)
+//                        context.stroke(_bodyRect)
+//                    }
+//                }
+//                else if open < close
+//                {
+//                    let color = dataSet.increasingColor ?? dataSet.color(atIndex: j)
+//
+//                    if dataSet.isIncreasingFilled
+//                    {
+//                        context.setFillColor(color.cgColor)
+//                        context.fill(_bodyRect)
+//                    }
+//                    else
+//                    {
+//                        context.setStrokeColor(color.cgColor)
+//                        context.stroke(_bodyRect)
+//                    }
+//                }
+//                else
+//                {
+//                    let color = dataSet.neutralColor ?? dataSet.color(atIndex: j)
+//
+//                    context.setStrokeColor(color.cgColor)
+//                    context.stroke(_bodyRect)
+//                }
                 
+                let lineColor = e.lineColor
+
                 // calculate the shadow
                 
                 _shadowPoints[0].x = CGFloat(xPos)
@@ -163,8 +168,6 @@ open class CandleStickChartRenderer: LineScatterCandleRadarRenderer
                 
                 // draw the shadows
                 
-                var shadowColor: NSUIColor! = nil
-                shadowColor = dataSet.shadowColor
                 //                if dataSet.shadowColorSameAsCandle
                 //                {
                 //                    if open > close
@@ -186,7 +189,7 @@ open class CandleStickChartRenderer: LineScatterCandleRadarRenderer
                 //                    shadowColor = dataSet.shadowColor ?? dataSet.color(atIndex: j)
                 //                }
                 
-                context.setStrokeColor(shadowColor.cgColor)
+                context.setStrokeColor(lineColor.cgColor)
                 context.strokeLineSegments(between: _shadowPoints)
                 
                 // draw high low middle
@@ -226,7 +229,7 @@ open class CandleStickChartRenderer: LineScatterCandleRadarRenderer
                 
                 
                 trans.pointValuesToPixel(&_linePoints)
-                context.setStrokeColor(shadowColor.cgColor)
+                context.setStrokeColor(lineColor.cgColor)
                 context.setLineWidth(2.5)
                 context.strokeLineSegments(between: _linePoints)
                 
@@ -237,7 +240,7 @@ open class CandleStickChartRenderer: LineScatterCandleRadarRenderer
                 _bodyRect.size.width = (CGFloat(xPos) + 0.5 - barSpace) - _bodyRect.origin.x
                 _bodyRect.size.height = CGFloat(open * phaseY) - _bodyRect.origin.y
                 
-                context.setStrokeColor(shadowColor.cgColor)
+                context.setStrokeColor(lineColor.cgColor)
                 trans.rectValueToPixel(&_bodyRect)
                 context.setLineWidth(dataSet.shadowWidth)
                 context.stroke(_bodyRect)

@@ -28,13 +28,19 @@ open class CandleChartDataEntry: ChartDataEntry
     /// open value
     open var middle = Double(0.0)
     
+    /// open value
+    open var lineColor = NSUIColor()
+    
+    /// open value
+    open var backgroundColor = NSUIColor()
+    
     public required init()
     {
         super.init()
     }
     
-    public init(x: Double, shadowH: Double, shadowL: Double, open: Double, middle: Double, close: Double)
-    {
+    public init(x: Double, shadowH: Double, shadowL: Double, open: Double, middle: Double,
+                close: Double, lineColor: NSUIColor, backgroundColor: NSUIColor) {
         super.init(x: x, y: (shadowH + shadowL) / 2.0)
         
         self.high = shadowH
@@ -42,10 +48,12 @@ open class CandleChartDataEntry: ChartDataEntry
         self.open = open
         self.close = close
         self.middle = middle
+        self.lineColor = lineColor
+        self.backgroundColor = backgroundColor
     }
     
-    public init(x: Double, shadowH: Double, shadowL: Double, open: Double, middle: Double, close: Double, data: AnyObject?)
-    {
+    public init(x: Double, shadowH: Double, shadowL: Double, open: Double, middle: Double,
+                close: Double, lineColor: NSUIColor, backgroundColor: NSUIColor, data: AnyObject?) {
         super.init(x: x, y: (shadowH + shadowL) / 2.0, data: data)
         
         self.high = shadowH
@@ -53,10 +61,12 @@ open class CandleChartDataEntry: ChartDataEntry
         self.open = open
         self.close = close
         self.middle = middle
+        self.lineColor = lineColor
+        self.backgroundColor = backgroundColor
     }
     
-    public init(x: Double, shadowH: Double, shadowL: Double, open: Double, middle: Double, close: Double, icon: NSUIImage?)
-    {
+    public init(x: Double, shadowH: Double, shadowL: Double, open: Double, middle: Double,
+                close: Double, lineColor: NSUIColor, backgroundColor: NSUIColor, icon: NSUIImage?) {
         super.init(x: x, y: (shadowH + shadowL) / 2.0, icon: icon)
         
         self.high = shadowH
@@ -64,10 +74,12 @@ open class CandleChartDataEntry: ChartDataEntry
         self.open = open
         self.close = close
         self.middle = middle
+        self.lineColor = lineColor
+        self.backgroundColor = backgroundColor
     }
     
-    public init(x: Double, shadowH: Double, shadowL: Double, open: Double, middle: Double, close: Double, icon: NSUIImage?, data: AnyObject?)
-    {
+    public init(x: Double, shadowH: Double, shadowL: Double, open: Double, middle: Double, close: Double,
+                lineColor: NSUIColor, backgroundColor: NSUIColor, icon: NSUIImage?, data: AnyObject?) {
         super.init(x: x, y: (shadowH + shadowL) / 2.0, icon: icon, data: data)
         
         self.high = shadowH
@@ -75,6 +87,8 @@ open class CandleChartDataEntry: ChartDataEntry
         self.open = open
         self.close = close
         self.middle = middle
+        self.lineColor = lineColor
+        self.backgroundColor = backgroundColor
     }
     
     /// - returns: The overall range (difference) between shadow-high and shadow-low.
@@ -104,14 +118,15 @@ open class CandleChartDataEntry: ChartDataEntry
     
     // MARK: NSCopying
     
-    open override func copyWithZone(_ zone: NSZone?) -> AnyObject
-    {
+    open override func copyWithZone(_ zone: NSZone?) -> AnyObject {
         let copy = super.copyWithZone(zone) as! CandleChartDataEntry
         copy.high = high
         copy.low = low
         copy.open = open
         copy.close = close
         copy.middle = middle
+        copy.lineColor = lineColor
+        copy.backgroundColor = backgroundColor
         return copy
     }
 }
