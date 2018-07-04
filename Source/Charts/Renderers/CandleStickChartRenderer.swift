@@ -196,6 +196,8 @@ open class CandleStickChartRenderer: LineScatterCandleRadarRenderer
                 
                 var isDrawHigh = true
                 var isDrawLow = true
+                var isDrawMiddle = middle == 0 ? true : false
+
                 if open > close {
                     isDrawHigh = open == high ? false : true
                     isDrawLow = close == open ? false : true
@@ -209,6 +211,9 @@ open class CandleStickChartRenderer: LineScatterCandleRadarRenderer
                     isDrawLow = low == open ? false : true
                 }
                 
+                isDrawHigh = open == 0 ? true : false
+                isDrawLow = close == 0 ? true : false
+                
                 if isDrawHigh {
                     _linePoints[0].x = CGFloat(xPos) - 0.25 * (1.0 - 2.0 * barSpace)
                     _linePoints[1].x = CGFloat(xPos) + 0.25 * (1.0 - 2.0 * barSpace)
@@ -221,12 +226,12 @@ open class CandleStickChartRenderer: LineScatterCandleRadarRenderer
                     _linePoints[4].y = CGFloat(low * phaseY)
                     _linePoints[5].y = CGFloat(low * phaseY)
                 }
-                
-                _linePoints[2].x = CGFloat(xPos) - 0.5 + barSpace
-                _linePoints[3].x = CGFloat(xPos) + 0.5 - barSpace
-                _linePoints[2].y = CGFloat(middle * phaseY)
-                _linePoints[3].y = CGFloat(middle * phaseY)
-                
+                if isDrawMiddle {
+                    _linePoints[2].x = CGFloat(xPos) - 0.5 + barSpace
+                    _linePoints[3].x = CGFloat(xPos) + 0.5 - barSpace
+                    _linePoints[2].y = CGFloat(middle * phaseY)
+                    _linePoints[3].y = CGFloat(middle * phaseY)
+                }
                 
                 trans.pointValuesToPixel(&_linePoints)
                 context.setStrokeColor(lineColor.cgColor)
