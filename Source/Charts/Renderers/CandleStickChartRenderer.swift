@@ -239,7 +239,7 @@ open class CandleStickChartRenderer: LineScatterCandleRadarRenderer
                 
                 trans.pointValuesToPixel(&_linePoints)
                 context.setStrokeColor(lineColor.cgColor)
-                context.setLineWidth(2.5)
+                context.setLineWidth(1.5)
                 context.strokeLineSegments(between: _linePoints)
                 
                 // draw bounds to body
