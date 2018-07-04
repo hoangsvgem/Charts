@@ -79,62 +79,67 @@ open class CandleStickChartRenderer: LineScatterCandleRadarRenderer
             let low = e.low
             let middle = e.middle
             
-            if showCandleBar
-            {
+            if showCandleBar {
                 // calculate the body
-                let color = e.backgroundColor
+                var isDrawBody = true
+                if high == 0 {
+                    isDrawBody = false
+                }
+                if isDrawBody {
+                    let color = e.backgroundColor
+                    
+                    _bodyRect.origin.x = CGFloat(xPos) - 0.5 + barSpace
+                    _bodyRect.origin.y = CGFloat(close * phaseY)
+                    _bodyRect.size.width = (CGFloat(xPos) + 0.5 - barSpace) - _bodyRect.origin.x
+                    _bodyRect.size.height = CGFloat(open * phaseY) - _bodyRect.origin.y
+                    
+                    trans.rectValueToPixel(&_bodyRect)
+                    context.setFillColor(color.cgColor)
+                    context.fill(_bodyRect)
+                }
                 
-                _bodyRect.origin.x = CGFloat(xPos) - 0.5 + barSpace
-                _bodyRect.origin.y = CGFloat(close * phaseY)
-                _bodyRect.size.width = (CGFloat(xPos) + 0.5 - barSpace) - _bodyRect.origin.x
-                _bodyRect.size.height = CGFloat(open * phaseY) - _bodyRect.origin.y
-                
-                trans.rectValueToPixel(&_bodyRect)
-                context.setStrokeColor(color.cgColor)
-                context.stroke(_bodyRect)
+                let lineColor = e.lineColor
                 
                 // draw body differently for increasing and decreasing entry
                 
-//                if open > close
-//                {
-//                    let color = dataSet.decreasingColor ?? dataSet.color(atIndex: j)
-//
-//                    if dataSet.isDecreasingFilled
-//                    {
-//                        context.setFillColor(color.cgColor)
-//                        context.fill(_bodyRect)
-//                    }
-//                    else
-//                    {
-//                        context.setStrokeColor(color.cgColor)
-//                        context.stroke(_bodyRect)
-//                    }
-//                }
-//                else if open < close
-//                {
-//                    let color = dataSet.increasingColor ?? dataSet.color(atIndex: j)
-//
-//                    if dataSet.isIncreasingFilled
-//                    {
-//                        context.setFillColor(color.cgColor)
-//                        context.fill(_bodyRect)
-//                    }
-//                    else
-//                    {
-//                        context.setStrokeColor(color.cgColor)
-//                        context.stroke(_bodyRect)
-//                    }
-//                }
-//                else
-//                {
-//                    let color = dataSet.neutralColor ?? dataSet.color(atIndex: j)
-//
-//                    context.setStrokeColor(color.cgColor)
-//                    context.stroke(_bodyRect)
-//                }
+                //                if open > close
+                //                {
+                //                    let color = dataSet.decreasingColor ?? dataSet.color(atIndex: j)
+                //
+                //                    if dataSet.isDecreasingFilled
+                //                    {
+                //                        context.setFillColor(color.cgColor)
+                //                        context.fill(_bodyRect)
+                //                    }
+                //                    else
+                //                    {
+                //                        context.setStrokeColor(color.cgColor)
+                //                        context.stroke(_bodyRect)
+                //                    }
+                //                }
+                //                else if open < close
+                //                {
+                //                    let color = dataSet.increasingColor ?? dataSet.color(atIndex: j)
+                //
+                //                    if dataSet.isIncreasingFilled
+                //                    {
+                //                        context.setFillColor(color.cgColor)
+                //                        context.fill(_bodyRect)
+                //                    }
+                //                    else
+                //                    {
+                //                        context.setStrokeColor(color.cgColor)
+                //                        context.stroke(_bodyRect)
+                //                    }
+                //                }
+                //                else
+                //                {
+                //                    let color = dataSet.neutralColor ?? dataSet.color(atIndex: j)
+                //
+                //                    context.setStrokeColor(color.cgColor)
+                //                    context.stroke(_bodyRect)
+                //                }
                 
-                let lineColor = e.lineColor
-
                 // calculate the shadow
                 
                 _shadowPoints[0].x = CGFloat(xPos)
@@ -164,8 +169,6 @@ open class CandleStickChartRenderer: LineScatterCandleRadarRenderer
                     _shadowPoints[3].y = _shadowPoints[1].y
                 }
                 
-                trans.pointValuesToPixel(&_shadowPoints)
-                
                 // draw the shadows
                 
                 //                if dataSet.shadowColorSameAsCandle
@@ -189,6 +192,7 @@ open class CandleStickChartRenderer: LineScatterCandleRadarRenderer
                 //                    shadowColor = dataSet.shadowColor ?? dataSet.color(atIndex: j)
                 //                }
                 
+                trans.pointValuesToPixel(&_shadowPoints)
                 context.setStrokeColor(lineColor.cgColor)
                 context.strokeLineSegments(between: _shadowPoints)
                 
@@ -196,8 +200,8 @@ open class CandleStickChartRenderer: LineScatterCandleRadarRenderer
                 
                 var isDrawHigh = true
                 var isDrawLow = true
-                var isDrawMiddle = middle == 0 ? true : false
-
+                var isDrawMiddle = middle == 0 ? false : true
+                
                 if open > close {
                     isDrawHigh = open == high ? false : true
                     isDrawLow = close == open ? false : true
@@ -211,8 +215,8 @@ open class CandleStickChartRenderer: LineScatterCandleRadarRenderer
                     isDrawLow = low == open ? false : true
                 }
                 
-                isDrawHigh = open == 0 ? true : false
-                isDrawLow = close == 0 ? true : false
+                isDrawHigh = open == 0 ? false : true
+                isDrawLow = close == 0 ? false : true
                 
                 if isDrawHigh {
                     _linePoints[0].x = CGFloat(xPos) - 0.25 * (1.0 - 2.0 * barSpace)
@@ -240,15 +244,15 @@ open class CandleStickChartRenderer: LineScatterCandleRadarRenderer
                 
                 // draw bounds to body
                 
-                _bodyRect.origin.x = CGFloat(xPos) - 0.5 + barSpace
-                _bodyRect.origin.y = CGFloat(close * phaseY)
-                _bodyRect.size.width = (CGFloat(xPos) + 0.5 - barSpace) - _bodyRect.origin.x
-                _bodyRect.size.height = CGFloat(open * phaseY) - _bodyRect.origin.y
-                
-                context.setStrokeColor(lineColor.cgColor)
-                trans.rectValueToPixel(&_bodyRect)
-                context.setLineWidth(dataSet.shadowWidth)
-                context.stroke(_bodyRect)
+                if isDrawMiddle {
+                    _bodyRect.origin.x = CGFloat(xPos) - 0.5 + barSpace
+                    _bodyRect.origin.y = CGFloat(close * phaseY)
+                    _bodyRect.size.width = (CGFloat(xPos) + 0.5 - barSpace) - _bodyRect.origin.x
+                    _bodyRect.size.height = CGFloat(open * phaseY) - _bodyRect.origin.y
+                    
+                    trans.rectValueToPixel(&_bodyRect)
+                    context.setStrokeColor(lineColor.cgColor)
+                    context.stroke(_bodyRect)
             } else {
                 _rangePoints[0].x = CGFloat(xPos)
                 _rangePoints[0].y = CGFloat(high * phaseY)
