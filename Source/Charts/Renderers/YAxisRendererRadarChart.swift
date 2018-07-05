@@ -196,8 +196,8 @@ open class YAxisRendererRadarChart: YAxisRenderer
                 point: CGPoint(x: p.x + 10.0, y: p.y - labelLineHeight),
                 align: .left,
                 attributes: [
-                    NSFontAttributeName: labelFont,
-                    NSForegroundColorAttributeName: labelTextColor
+                    NSAttributedStringKey(rawValue: NSAttributedStringKey.font.rawValue): labelFont,
+                    NSAttributedStringKey(rawValue: NSAttributedStringKey.foregroundColor.rawValue): labelTextColor
                 ])
         }
     }

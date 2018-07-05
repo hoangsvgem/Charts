@@ -39,7 +39,7 @@ open class CustomXAxisRenderer: XAxisRenderer
         //label attrs moved from here
         //        let labelAttrs = [NSFontAttributeName: xAxis.labelFont,
         //            NSForegroundColorAttributeName: xAxis.labelTextColor,
-        //            NSParagraphStyleAttributeName: paraStyle] as [String : NSObject]
+        //            NSParagraphStyleAttributeName: paraStyle] as [NSAttributedStringKey : Any]
         let labelRotationAngleRadians = xAxis.labelRotationAngle * ChartUtils.Math.FDEG2RAD
         
         let centeringEnabled = xAxis.isCenterAxisLabelsEnabled
@@ -60,7 +60,7 @@ open class CustomXAxisRenderer: XAxisRenderer
         for i in stride(from: 0, to: entries.count, by: 1)
         {
             //label attrs moved to here
-            var labelAttrs: [String: NSObject]!
+            var labelAttrs: [NSAttributedStringKey : Any]!
             
             for j in 0..<labelList.count {
                 labelList[j] = labelList[j].trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines).uppercased()
@@ -86,23 +86,23 @@ open class CustomXAxisRenderer: XAxisRenderer
                 if labelList.contains(label) {
                     if labelList.index(of: label)! < haveCommentList.count {
                         if haveCommentList[labelList.index(of: label)!] {
-                            labelAttrs = [NSFontAttributeName: xAxis.labelFont,
-                                          NSForegroundColorAttributeName: UIColor.blue,
-                                          NSParagraphStyleAttributeName: paraStyle] as [String : NSObject]
+                            labelAttrs = [NSAttributedStringKey.font.rawValue: xAxis.labelFont,
+                                          NSAttributedStringKey.foregroundColor: UIColor.blue,
+                                          NSAttributedStringKey.paragraphStyle: paraStyle] as! [NSAttributedStringKey : Any]
                         } else {
-                            labelAttrs = [NSFontAttributeName: xAxis.labelFont,
-                                          NSForegroundColorAttributeName: xAxis.labelTextColor,
-                                          NSParagraphStyleAttributeName: paraStyle] as [String : NSObject]
+                            labelAttrs = [NSAttributedStringKey.font.rawValue: xAxis.labelFont,
+                                          NSAttributedStringKey.foregroundColor: xAxis.labelTextColor,
+                                          NSAttributedStringKey.paragraphStyle: paraStyle] as! [NSAttributedStringKey : Any]
                         }
                     } else {
-                        labelAttrs = [NSFontAttributeName: xAxis.labelFont,
-                                      NSForegroundColorAttributeName: xAxis.labelTextColor,
-                                      NSParagraphStyleAttributeName: paraStyle] as [String : NSObject]
+                        labelAttrs = [NSAttributedStringKey.font.rawValue: xAxis.labelFont,
+                                      NSAttributedStringKey.foregroundColor: xAxis.labelTextColor,
+                                      NSAttributedStringKey.paragraphStyle: paraStyle] as! [NSAttributedStringKey : Any]
                     }
                 } else {
-                    labelAttrs = [NSFontAttributeName: xAxis.labelFont,
-                                  NSForegroundColorAttributeName: xAxis.labelTextColor,
-                                  NSParagraphStyleAttributeName: paraStyle] as [String : NSObject]
+                    labelAttrs = [NSAttributedStringKey.font.rawValue: xAxis.labelFont,
+                                  NSAttributedStringKey.foregroundColor: xAxis.labelTextColor,
+                                  NSAttributedStringKey.paragraphStyle: paraStyle] as! [NSAttributedStringKey : Any]
                 }
                 
                 let labelns = labelCouldShort as NSString
