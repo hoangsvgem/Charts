@@ -1702,8 +1702,7 @@ open class BarLineChartViewBase: ChartViewBase, BarLineScatterCandleBubbleChartD
 
     /// - returns: The y-axis object to the corresponding AxisDependency. In the
     /// horizontal bar-chart, LEFT == top, RIGHT == BOTTOM
-    open func getAxis(_ axis: YAxis.AxisDependency) -> YAxis
-    {
+    @objc open func getAxis(_ axis: YAxis.AxisDependency) -> YAxis {
         if axis == .left
         {
             return _leftAxis
