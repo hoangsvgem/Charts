@@ -200,7 +200,7 @@ open class CandleStickChartRenderer: LineScatterCandleRadarRenderer
                 
                 var isDrawHigh = true
                 var isDrawLow = true
-                var isDrawMiddle = middle == 0 ? false : true
+                let isDrawMiddle = middle == 0 ? false : true
                 
                 if open > close {
                     isDrawHigh = open == high ? false : true

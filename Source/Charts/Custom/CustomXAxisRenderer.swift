@@ -86,23 +86,23 @@ open class CustomXAxisRenderer: XAxisRenderer
                 if labelList.contains(label) {
                     if labelList.index(of: label)! < haveCommentList.count {
                         if haveCommentList[labelList.index(of: label)!] {
-                            labelAttrs = [NSAttributedStringKey.font.rawValue: xAxis.labelFont,
-                                          NSAttributedStringKey.foregroundColor: UIColor.blue,
-                                          NSAttributedStringKey.paragraphStyle: paraStyle] as! [NSAttributedStringKey : Any]
+                            labelAttrs = [.font: xAxis.labelFont,
+                                          .foregroundColor: UIColor.blue,
+                                          .paragraphStyle: paraStyle]
                         } else {
-                            labelAttrs = [NSAttributedStringKey.font.rawValue: xAxis.labelFont,
-                                          NSAttributedStringKey.foregroundColor: xAxis.labelTextColor,
-                                          NSAttributedStringKey.paragraphStyle: paraStyle] as! [NSAttributedStringKey : Any]
+                            labelAttrs = [.font: xAxis.labelFont,
+                                          .foregroundColor: xAxis.labelTextColor,
+                                          .paragraphStyle: paraStyle]
                         }
                     } else {
-                        labelAttrs = [NSAttributedStringKey.font.rawValue: xAxis.labelFont,
-                                      NSAttributedStringKey.foregroundColor: xAxis.labelTextColor,
-                                      NSAttributedStringKey.paragraphStyle: paraStyle] as! [NSAttributedStringKey : Any]
+                        labelAttrs = [.font: xAxis.labelFont,
+                                      .foregroundColor: xAxis.labelTextColor,
+                                      .paragraphStyle: paraStyle]
                     }
                 } else {
-                    labelAttrs = [NSAttributedStringKey.font.rawValue: xAxis.labelFont,
-                                  NSAttributedStringKey.foregroundColor: xAxis.labelTextColor,
-                                  NSAttributedStringKey.paragraphStyle: paraStyle] as! [NSAttributedStringKey : Any]
+                    labelAttrs = [.font: xAxis.labelFont,
+                                  .foregroundColor: xAxis.labelTextColor,
+                                  .paragraphStyle: paraStyle]
                 }
                 
                 let labelns = labelCouldShort as NSString
