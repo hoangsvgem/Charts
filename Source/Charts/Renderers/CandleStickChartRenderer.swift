@@ -253,6 +253,7 @@ open class CandleStickChartRenderer: LineScatterCandleRadarRenderer
                     trans.rectValueToPixel(&_bodyRect)
                     context.setStrokeColor(lineColor.cgColor)
                     context.stroke(_bodyRect)
+                }
             } else {
                 _rangePoints[0].x = CGFloat(xPos)
                 _rangePoints[0].y = CGFloat(high * phaseY)
