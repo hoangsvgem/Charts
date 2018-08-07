@@ -85,16 +85,25 @@ open class PieChartView: PieRadarChartViewBase
     internal override func initialize()
     {
         super.initialize()
-        
+        self.addLeftLabelHalfPieChart(leftText: "Left")
+        self.addRightLabelHalfPieChart(rightText: "Right")
         renderer = PieChartRenderer(chart: self, animator: chartAnimator, viewPortHandler: viewPortHandler)
-
         self.highlighter = PieHighlighter(chart: self)
+    }
+    public func addLeftLabelHalfPieChart(leftText: String){
+        let _label = UILabel(frame: CGRect(x: 160, y: 226, width: 90, height: 30.0))
+        _label.text = leftText
+        self.addSubview(_label)
+    }
+    public func addRightLabelHalfPieChart(rightText: String) {
+        let _label = UILabel(frame: CGRect(x: 160, y: 226, width: 90, height: 30.0))
+        _label.text = rightText
+        self.addSubview(_label)
     }
     
     open override func draw(_ rect: CGRect)
     {
         super.draw(rect)
-        
         if data === nil
         {
             return
@@ -260,6 +269,8 @@ open class PieChartView: PieRadarChartViewBase
         get { fatalError("PieChart has no XAxis") }
         set { fatalError("PieChart has no XAxis") }
     }
+    
+    
     
     open override func indexForAngle(_ angle: CGFloat) -> Int
     {
