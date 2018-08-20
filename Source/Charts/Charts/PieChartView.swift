@@ -13,7 +13,7 @@ import Foundation
 import CoreGraphics
 
 #if !os(OSX)
-    import UIKit
+import UIKit
 #endif
 
 /// View that represents a pie chart. Draws cake like slices.
@@ -71,21 +71,34 @@ open class PieChartView: PieRadarChartViewBase
     
     /// maximum angle for this pie
     fileprivate var _maxAngle: CGFloat = 360.0
-
+    
+    // dong guageChart
+    let leftLable = UILabel()
+    let rightLable = UILabel()
+    
+    public var leftText: String = ""
+    public var rightText: String = ""
+    public var isGuage: Bool = false
+    
     public override init(frame: CGRect)
     {
         super.init(frame: frame)
+        #if !os(OSX)
+        self.setupLable()
+        #endif
     }
     
     public required init?(coder aDecoder: NSCoder)
     {
         super.init(coder: aDecoder)
+        #if !os(OSX)
+        self.setupLable()
+        #endif
     }
     
     internal override func initialize()
     {
         super.initialize()
-        
         renderer = PieChartRenderer(chart: self, animator: _animator, viewPortHandler: _viewPortHandler)
         _xAxis = nil
         
@@ -95,7 +108,6 @@ open class PieChartView: PieRadarChartViewBase
     open override func draw(_ rect: CGRect)
     {
         super.draw(rect)
-        
         if _data === nil
         {
             return
@@ -125,7 +137,6 @@ open class PieChartView: PieRadarChartViewBase
     internal override func calculateOffsets()
     {
         super.calculateOffsets()
-        
         // prevent nullpointer when no data set
         if _data === nil
         {
@@ -141,8 +152,17 @@ open class PieChartView: PieRadarChartViewBase
         // create the circle box that will contain the pie-chart (the bounds of the pie-chart)
         _circleBox.origin.x = (c.x - radius) + shift
         _circleBox.origin.y = (c.y - radius) + shift
+        
         _circleBox.size.width = diameter - shift * 2.0
         _circleBox.size.height = diameter - shift * 2.0
+        if isGuage {
+            _circleBox.origin.y += _circleBox.width / 5
+            setLeftLable()
+            setRightLable()
+        }else {
+            leftLable.isHidden = true
+            rightLable.isHidden = true
+        }
     }
     
     internal override func calcMinMax()
@@ -185,7 +205,7 @@ open class PieChartView: PieRadarChartViewBase
         _absoluteAngles = [CGFloat]()
         
         guard let data = _data else { return }
-
+        
         let entryCount = data.entryCount
         
         _drawAngles.reserveCapacity(entryCount)
@@ -194,20 +214,20 @@ open class PieChartView: PieRadarChartViewBase
         let yValueSum = (_data as! PieChartData).yValueSum
         
         var dataSets = data.dataSets
-
+        
         var cnt = 0
-
+        
         for i in 0 ..< data.dataSetCount
         {
             let set = dataSets[i]
             let entryCount = set.entryCount
-
+            
             for j in 0 ..< entryCount
             {
                 guard let e = set.entryForIndex(j) else { continue }
                 
                 _drawAngles.append(calcAngle(value: abs(e.y), yValueSum: yValueSum))
-
+                
                 if cnt == 0
                 {
                     _absoluteAngles.append(_drawAngles[cnt])
@@ -216,7 +236,7 @@ open class PieChartView: PieRadarChartViewBase
                 {
                     _absoluteAngles.append(_absoluteAngles[cnt - 1] + _drawAngles[cnt])
                 }
-
+                
                 cnt += 1
             }
         }
@@ -299,7 +319,7 @@ open class PieChartView: PieRadarChartViewBase
     {
         return _drawAngles
     }
-
+    
     /// - returns: The absolute angles of the different chart slices (where the
     /// slices end)
     open var absoluteAngles: [CGFloat]
@@ -308,10 +328,10 @@ open class PieChartView: PieRadarChartViewBase
     }
     
     /// The color for the hole that is drawn in the center of the PieChart (if enabled).
-    /// 
+    ///
     /// - note: Use holeTransparent with holeColor = nil to make the hole transparent.*
     open var holeColor: NSUIColor?
-    {
+        {
         get
         {
             return _holeColor
@@ -327,7 +347,7 @@ open class PieChartView: PieRadarChartViewBase
     ///
     /// **default**: `false`
     open var drawSlicesUnderHoleEnabled: Bool
-    {
+        {
         get
         {
             return _drawSlicesUnderHoleEnabled
@@ -347,7 +367,7 @@ open class PieChartView: PieRadarChartViewBase
     
     /// `true` if the hole in the center of the pie-chart is set to be visible, `false` ifnot
     open var drawHoleEnabled: Bool
-    {
+        {
         get
         {
             return _drawHoleEnabled
@@ -361,7 +381,7 @@ open class PieChartView: PieRadarChartViewBase
     
     /// - returns: `true` if the hole in the center of the pie-chart is set to be visible, `false` ifnot
     open var isDrawHoleEnabled: Bool
-    {
+        {
         get
         {
             return drawHoleEnabled
@@ -370,7 +390,7 @@ open class PieChartView: PieRadarChartViewBase
     
     /// the text that is displayed in the center of the pie-chart
     open var centerText: String?
-    {
+        {
         get
         {
             return self.centerAttributedText?.string
@@ -385,9 +405,9 @@ open class PieChartView: PieRadarChartViewBase
             else
             {
                 #if os(OSX)
-                    let paragraphStyle = NSParagraphStyle.default().mutableCopy() as! NSMutableParagraphStyle
+                let paragraphStyle = NSParagraphStyle.default().mutableCopy() as! NSMutableParagraphStyle
                 #else
-                    let paragraphStyle = NSParagraphStyle.default.mutableCopy() as! NSMutableParagraphStyle
+                let paragraphStyle = NSParagraphStyle.default.mutableCopy() as! NSMutableParagraphStyle
                 #endif
                 paragraphStyle.lineBreakMode = NSLineBreakMode.byTruncatingTail
                 paragraphStyle.alignment = .center
@@ -405,7 +425,7 @@ open class PieChartView: PieRadarChartViewBase
     
     /// the text that is displayed in the center of the pie-chart
     open var centerAttributedText: NSAttributedString?
-    {
+        {
         get
         {
             return _centerAttributedText
@@ -419,7 +439,7 @@ open class PieChartView: PieRadarChartViewBase
     
     /// Sets the offset the center text should have from it's original position in dp. Default x = 0, y = 0
     open var centerTextOffset: CGPoint
-    {
+        {
         get
         {
             return _centerTextOffset
@@ -433,7 +453,7 @@ open class PieChartView: PieRadarChartViewBase
     
     /// `true` if drawing the center text is enabled
     open var drawCenterTextEnabled: Bool
-    {
+        {
         get
         {
             return _drawCenterTextEnabled
@@ -447,7 +467,7 @@ open class PieChartView: PieRadarChartViewBase
     
     /// - returns: `true` if drawing the center text is enabled
     open var isDrawCenterTextEnabled: Bool
-    {
+        {
         get
         {
             return drawCenterTextEnabled
@@ -482,10 +502,10 @@ open class PieChartView: PieRadarChartViewBase
     }
     
     /// the radius of the hole in the center of the piechart in percent of the maximum radius (max = the radius of the whole chart)
-    /// 
+    ///
     /// **default**: 0.5 (50%) (half the pie)
     open var holeRadiusPercent: CGFloat
-    {
+        {
         get
         {
             return _holeRadiusPercent
@@ -501,7 +521,7 @@ open class PieChartView: PieRadarChartViewBase
     ///
     /// **default**: `nil`
     open var transparentCircleColor: NSUIColor?
-    {
+        {
         get
         {
             return _transparentCircleColor
@@ -514,10 +534,10 @@ open class PieChartView: PieRadarChartViewBase
     }
     
     /// the radius of the transparent circle that is drawn next to the hole in the piechart in percent of the maximum radius (max = the radius of the whole chart)
-    /// 
+    ///
     /// **default**: 0.55 (55%) -> means 5% larger than the center-hole by default
     open var transparentCircleRadiusPercent: CGFloat
-    {
+        {
         get
         {
             return _transparentCircleRadiusPercent
@@ -532,7 +552,7 @@ open class PieChartView: PieRadarChartViewBase
     /// set this to true to draw the enrty labels into the pie slices
     @available(*, deprecated: 1.0, message: "Use `drawEntryLabelsEnabled` instead.")
     open var drawSliceTextEnabled: Bool
-    {
+        {
         get
         {
             return drawEntryLabelsEnabled
@@ -546,7 +566,7 @@ open class PieChartView: PieRadarChartViewBase
     /// - returns: `true` if drawing entry labels is enabled, `false` ifnot
     @available(*, deprecated: 1.0, message: "Use `isDrawEntryLabelsEnabled` instead.")
     open var isDrawSliceTextEnabled: Bool
-    {
+        {
         get
         {
             return isDrawEntryLabelsEnabled
@@ -555,7 +575,7 @@ open class PieChartView: PieRadarChartViewBase
     
     /// The color the entry labels are drawn with.
     open var entryLabelColor: NSUIColor?
-    {
+        {
         get { return _entryLabelColor }
         set
         {
@@ -566,7 +586,7 @@ open class PieChartView: PieRadarChartViewBase
     
     /// The font the entry labels are drawn with.
     open var entryLabelFont: NSUIFont?
-    {
+        {
         get { return _entryLabelFont }
         set
         {
@@ -577,7 +597,7 @@ open class PieChartView: PieRadarChartViewBase
     
     /// Set this to true to draw the enrty labels into the pie slices
     open var drawEntryLabelsEnabled: Bool
-    {
+        {
         get
         {
             return _drawEntryLabelsEnabled
@@ -591,7 +611,7 @@ open class PieChartView: PieRadarChartViewBase
     
     /// - returns: `true` if drawing entry labels is enabled, `false` ifnot
     open var isDrawEntryLabelsEnabled: Bool
-    {
+        {
         get
         {
             return drawEntryLabelsEnabled
@@ -600,7 +620,7 @@ open class PieChartView: PieRadarChartViewBase
     
     /// If this is enabled, values inside the PieChart are drawn in percent and not with their original value. Values provided for the ValueFormatter to format are then provided in percent.
     open var usePercentValuesEnabled: Bool
-    {
+        {
         get
         {
             return _usePercentValuesEnabled
@@ -614,7 +634,7 @@ open class PieChartView: PieRadarChartViewBase
     
     /// - returns: `true` if drawing x-values is enabled, `false` ifnot
     open var isUsePercentValuesEnabled: Bool
-    {
+        {
         get
         {
             return usePercentValuesEnabled
@@ -623,7 +643,7 @@ open class PieChartView: PieRadarChartViewBase
     
     /// the rectangular radius of the bounding box for the center text, as a percentage of the pie hole
     open var centerTextRadiusPercent: CGFloat
-    {
+        {
         get
         {
             return _centerTextRadiusPercent
@@ -635,11 +655,13 @@ open class PieChartView: PieRadarChartViewBase
         }
     }
     
+    
+    
     /// The max angle that is used for calculating the pie-circle.
     /// 360 means it's a full pie-chart, 180 results in a half-pie-chart.
     /// **default**: 360.0
     open var maxAngle: CGFloat
-    {
+        {
         get
         {
             return _maxAngle
@@ -659,4 +681,36 @@ open class PieChartView: PieRadarChartViewBase
             }
         }
     }
+    #if !os(OSX)
+    public func setupLable() {
+        self.addSubview(leftLable)
+        self.addSubview(rightLable)
+    }
+    public func setLeftLable() {
+        let fontAttributes = [NSAttributedStringKey.font: self.entryLabelFont]
+        let guageWith = (self.circleBox.size.width - self.circleBox.size.width/2) / 2
+        let yOfView = self.contentRect.origin.y + self.contentRect.size.height / 2.0 + _circleBox.width / 5
+        let centerView = self.contentRect.size.width / 2.0
+        let size = ("A").size(withAttributes: fontAttributes)
+        leftLable.frame = CGRect(x: centerView - self.circleBox.size.width / 4 - guageWith,
+                                 y: yOfView, width: guageWith, height: size.height)
+        leftLable.font = self.entryLabelFont
+        leftLable.text = leftText
+        leftLable.textAlignment = .center
+        
+    }
+    public func setRightLable() {
+        let fontAttributes = [NSAttributedStringKey.font: self.entryLabelFont]
+        let guageWith = (self.circleBox.size.width - self.circleBox.size.width/2) / 2
+        let yOfView = self.contentRect.origin.y + self.contentRect.size.height / 2.0 + _circleBox.width / 5
+        let centerView = self.contentRect.size.width / 2.0
+        let size = ("A").size(withAttributes: fontAttributes)
+        rightLable.frame = CGRect(x: centerView + self.circleBox.size.width / 4,
+                                  y: yOfView, width: guageWith, height: size.height)
+        rightLable.text = rightText
+        rightLable.font = self.entryLabelFont
+        rightLable.textAlignment = .center
+        
+    }
+    #endif
 }
