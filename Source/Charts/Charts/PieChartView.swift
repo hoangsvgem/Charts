@@ -69,6 +69,11 @@ open class PieChartView: PieRadarChartViewBase
     
     private var _centerTextRadiusPercent: CGFloat = 1.0
     
+    private var _isHalfPieChart :Bool = false
+    
+    private var _labelLeft: String?
+    private var _labelRight: String?
+    
     /// maximum angle for this pie
     private var _maxAngle: CGFloat = 360.0
 
@@ -85,20 +90,30 @@ open class PieChartView: PieRadarChartViewBase
     internal override func initialize()
     {
         super.initialize()
-        self.addLeftLabelHalfPieChart(leftText: "Left")
-        self.addRightLabelHalfPieChart(rightText: "Right")
         renderer = PieChartRenderer(chart: self, animator: chartAnimator, viewPortHandler: viewPortHandler)
         self.highlighter = PieHighlighter(chart: self)
     }
     public func addLeftLabelHalfPieChart(leftText: String){
-        let _label = UILabel(frame: CGRect(x: 160, y: 226, width: 90, height: 30.0))
-        _label.text = leftText
-        self.addSubview(_label)
+        if let font = UIFont(name: "Helvetica", size: 24) {
+            let fontAttributes = [NSAttributedStringKey.font: font]
+            let size = (leftText as NSString).size(withAttributes: fontAttributes)
+            let _label = UILabel(frame: CGRect(x: contentRect.size.width / 2.0 - _circleBox.size.width / 4 - size.width - contentRect.origin.x,
+                                               y: contentRect.origin.y + contentRect.size.height / 2.0,
+                                               width: size.width, height: size.height))
+            _label.text = leftText
+            self.addSubview(_label)
+        }
     }
     public func addRightLabelHalfPieChart(rightText: String) {
-        let _label = UILabel(frame: CGRect(x: 160, y: 226, width: 90, height: 30.0))
-        _label.text = rightText
-        self.addSubview(_label)
+        if let font = UIFont(name: "Helvetica", size: 24) {
+            let fontAttributes = [NSAttributedStringKey.font: font]
+            let size = (rightText as NSString).size(withAttributes: fontAttributes)
+            let _label = UILabel(frame: CGRect(x: contentRect.size.width / 2.0 + _circleBox.size.width / 4 + size.width/2 - contentRect.origin.x,
+                                               y: contentRect.origin.y + contentRect.size.height / 2.0 ,
+                                               width: size.width, height: size.height))
+            _label.text = rightText
+            self.addSubview(_label)
+        }
     }
     
     open override func draw(_ rect: CGRect)
@@ -129,6 +144,9 @@ open class PieChartView: PieRadarChartViewBase
         legendRenderer.renderLegend(context: context)
         
         drawDescription(in: context)
+        
+        self.addLeftLabelHalfPieChart(leftText: "Left")
+        self.addRightLabelHalfPieChart(rightText: "Right")
         
         drawMarkers(context: context)
     }
@@ -349,6 +367,7 @@ open class PieChartView: PieRadarChartViewBase
             setNeedsDisplay()
         }
     }
+    
     
     /// - returns: `true` if the inner tips of the slices are visible behind the hole, `false` if not.
     @objc open var isDrawSlicesUnderHoleEnabled: Bool

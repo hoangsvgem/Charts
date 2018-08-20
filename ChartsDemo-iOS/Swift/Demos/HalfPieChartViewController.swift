@@ -21,7 +21,8 @@ class HalfPieChartViewController: DemoBaseViewController {
         
         chartView.holeColor = .white
         chartView.transparentCircleColor = NSUIColor.white.withAlphaComponent(0.43)
-        chartView.holeRadiusPercent = 0.58
+        chartView.transparentCircleRadiusPercent = 0
+        chartView.holeRadiusPercent = 0.48
         chartView.rotationEnabled = false
         chartView.maxAngle = 180 // Half chart
         chartView.rotationAngle = 180 // Rotate to make the half on the upper side
@@ -35,12 +36,9 @@ class HalfPieChartViewController: DemoBaseViewController {
         l.xEntrySpace = 7
         l.yEntrySpace = 0
         l.yOffset = 0
-//        chartView.addLeftLabelHalfPieChart(leftText: "Left")
-//        chartView.addRightLabelHalfPieChart(rightText: "Right")
         chartView.centerAttributedText = NSMutableAttributedString(string: "mBI")
         self.updateChartData()
-        
-        chartView.animate(xAxisDuration: 1.4, easingOption: .easeOutBack)
+//        chartView.animate(xAxisDuration: 1.4, easingOption: .easeOutBack) 
     }
     
     override func updateChartData() {
@@ -49,7 +47,7 @@ class HalfPieChartViewController: DemoBaseViewController {
             return
         }
         
-        self.setDataCount(1, range: 1)
+        self.setDataCount(2, range: 1)
     }
 
     func setDataCount(_ count: Int, range: UInt32) {
