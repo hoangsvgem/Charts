@@ -415,7 +415,7 @@ open class PieChartView: PieRadarChartViewBase
                 attrString = NSMutableAttributedString(string: newValue!)
                 attrString?.setAttributes([
                     NSAttributedStringKey.foregroundColor: NSUIColor.black,
-                    NSAttributedStringKey.font: NSUIFont.systemFont(ofSize: 12.0),
+                    NSAttributedStringKey.font: entryLabelFont,
                     NSAttributedStringKey.paragraphStyle: paragraphStyle
                     ], range: NSMakeRange(0, attrString!.length))
             }
@@ -688,12 +688,12 @@ open class PieChartView: PieRadarChartViewBase
     }
     public func setLeftLable() {
         let fontAttributes = [NSAttributedStringKey.font: self.entryLabelFont]
-        let guageWith = (self.circleBox.size.width - self.circleBox.size.width/2) / 2
+        let guageWith = (self.circleBox.size.width - self.circleBox.size.width * holeRadiusPercent) / 2
         let yOfView = self.contentRect.origin.y + self.contentRect.size.height / 2.0 + _circleBox.width / 5
         let centerView = self.contentRect.size.width / 2.0
         let size = ("A").size(withAttributes: fontAttributes)
-        leftLable.frame = CGRect(x: centerView - self.circleBox.size.width / 4 - guageWith,
-                                 y: yOfView, width: guageWith, height: size.height)
+        leftLable.frame = CGRect(x: centerView - self.circleBox.size.width / 2,
+                                 y: yOfView, width: guageWith, height: size.height * 1.4)
         leftLable.font = self.entryLabelFont
         leftLable.text = leftText
         leftLable.textAlignment = .center
@@ -701,12 +701,12 @@ open class PieChartView: PieRadarChartViewBase
     }
     public func setRightLable() {
         let fontAttributes = [NSAttributedStringKey.font: self.entryLabelFont]
-        let guageWith = (self.circleBox.size.width - self.circleBox.size.width/2) / 2
+        let guageWith = (self.circleBox.size.width - self.circleBox.size.width * holeRadiusPercent) / 2
         let yOfView = self.contentRect.origin.y + self.contentRect.size.height / 2.0 + _circleBox.width / 5
         let centerView = self.contentRect.size.width / 2.0
         let size = ("A").size(withAttributes: fontAttributes)
-        rightLable.frame = CGRect(x: centerView + self.circleBox.size.width / 4,
-                                  y: yOfView, width: guageWith, height: size.height)
+        rightLable.frame = CGRect(x: centerView + self.circleBox.size.width / 2 - guageWith,
+                                  y: yOfView, width: guageWith, height: size.height * 1.4)
         rightLable.text = rightText
         rightLable.font = self.entryLabelFont
         rightLable.textAlignment = .center
